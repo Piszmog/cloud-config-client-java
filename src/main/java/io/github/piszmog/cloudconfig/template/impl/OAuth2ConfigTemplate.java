@@ -38,26 +38,6 @@ public class OAuth2ConfigTemplate extends ConfigTemplate
         this.oAuth2ProtectedResourceDetails = oAuth2ProtectedResourceDetails;
     }
 
-    /**
-     * Creates a config template using the provided rest template.
-     * <pre>
-     *     The RestTemplate is usually built using,
-     *     <code>restTemplate = new OAuth2RestTemplate( oAuth2ProtectedResourceDetails );</code>
-     * </pre>
-     * <p>
-     * This constructor is primary used for unit testing.
-     *
-     * @param configClientProperties the config server properties
-     * @param restTemplate           the rest temp[late to use when calling the config server
-     */
-    public OAuth2ConfigTemplate( final ConfigClientProperties configClientProperties,
-                                 final RestTemplate restTemplate )
-    {
-        super( configClientProperties );
-        oAuth2ProtectedResourceDetails = null;
-        this.restTemplate = restTemplate;
-    }
-
     // ============================================================
     // Initializer Methods:
     // ============================================================

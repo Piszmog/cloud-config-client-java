@@ -59,22 +59,6 @@ public class LocalConfigTemplate extends ConfigTemplate
         this.readTimeout = readTimeout;
     }
 
-    /**
-     * Creates a config template using the provided rest template.
-     * <p>
-     * This constructor is primary used for unit testing.
-     *
-     * @param configClientProperties the config server properties
-     * @param restTemplate           the rest template to use when calling the config server
-     */
-    public LocalConfigTemplate( final ConfigClientProperties configClientProperties,
-                                final RestTemplate restTemplate )
-    {
-        super( configClientProperties );
-        this.readTimeout = DEFAULT_READ_TIMEOUT;
-        this.restTemplate = restTemplate;
-    }
-
     // ============================================================
     // Initializer Methods:
     // ============================================================
