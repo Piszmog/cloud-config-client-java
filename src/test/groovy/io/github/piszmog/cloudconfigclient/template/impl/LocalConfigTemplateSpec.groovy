@@ -3,7 +3,6 @@ package io.github.piszmog.cloudconfigclient.template.impl
 import io.github.piszmog.cloudconfig.template.impl.LocalConfigTemplate
 import org.springframework.cloud.config.client.ConfigClientProperties
 import org.springframework.core.env.StandardEnvironment
-import org.springframework.http.HttpMethod
 import spock.lang.Specification
 
 /**
@@ -13,25 +12,101 @@ import spock.lang.Specification
  */
 class LocalConfigTemplateSpec extends Specification
 {
+    // ============================================================
+    // Class Attributes:
+    // ============================================================
+
     private ConfigClientProperties configClientProperties
+
+    // ============================================================
+    // Setup:
+    // ============================================================
 
     def setup()
     {
-        configClientProperties = new ConfigClientProperties(new StandardEnvironment())
+        configClientProperties = new ConfigClientProperties( new StandardEnvironment() )
     }
 
-    def "test"()
+    // ============================================================
+    // Tests:
+    // ============================================================
+
+    def "localConfigTemplate is initialized"()
     {
-        given: "a localConfigTemplate with default read timeout"
-        def localConfigTemplate = new LocalConfigTemplate(configClientProperties)
+        given: "a localConfigTemplate"
+        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate( configClientProperties )
 
         when: "localConfigTemplate is initialized"
         localConfigTemplate.init()
 
-        and: "localConfigTemplate sends and receives to a url path"
-        localConfigTemplate.sendAndReceive("url path", HttpMethod.GET, null, null, String)
+        then: "template is properly initialized"
+        notThrown( RuntimeException )
+    }
 
-        then:
-        1 == 1
+    def "localConfigTemplate is initialized when username and password are null"()
+    {
+        given: "configClientProperties"
+        ConfigClientProperties mockConfigClientProperties = Mock( ConfigClientProperties )
+
+        and: "a localConfigTemplate"
+        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate( mockConfigClientProperties, 1 )
+
+        when: "localConfigTemplate is initialized"
+        localConfigTemplate.init()
+
+        then: "password is not null"
+        mockConfigClientProperties.getPassword() >> "password"
+
+        and: "authorization is not null"
+        mockConfigClientProperties.getAuthorization() >> "authorization"
+
+        and: "there are headers"
+        mockConfigClientProperties.getHeaders() >> new HashMap<String, String>()
+
+        and: "template is unable to be initialized"
+        thrown( RuntimeException )
+    }
+
+    def "localConfigTemplate is initialized when username and password are not null"()
+    {
+        given: "configClientProperties"
+        ConfigClientProperties mockConfigClientProperties = Mock( ConfigClientProperties )
+
+        and: "a localConfigTemplate"
+        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate( mockConfigClientProperties )
+
+        when: "localConfigTemplate is initialized"
+        localConfigTemplate.init()
+
+        then: "username and password are valid"
+        mockConfigClientProperties.getUsername() >> "username"
+        mockConfigClientProperties.getPassword() >> "password"
+
+        and: "there are headers"
+        mockConfigClientProperties.getHeaders() >> new HashMap<String, String>()
+
+        and: "template is properly initialized"
+        notThrown( RuntimeException )
+    }
+
+    def "localConfigTemplate is initialized when authorization is used"()
+    {
+        given: "configClientProperties"
+        ConfigClientProperties mockConfigClientProperties = Mock( ConfigClientProperties )
+
+        and: "a localConfigTemplate"
+        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate( mockConfigClientProperties )
+
+        when: "localConfigTemplate is initialized"
+        localConfigTemplate.init()
+
+        then: "username and password are valid"
+        mockConfigClientProperties.getAuthorization() >> "authorization"
+
+        and: "there are headers"
+        mockConfigClientProperties.getHeaders() >> new HashMap<String, String>()
+
+        and: "template is properly initialized"
+        notThrown( RuntimeException )
     }
 }

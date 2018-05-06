@@ -4,7 +4,6 @@ import io.github.piszmog.cloudconfig.template.ConfigTemplate;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 
@@ -48,9 +47,6 @@ public class OAuth2ConfigTemplate extends ConfigTemplate
     @PostConstruct
     public void init()
     {
-        if ( restTemplate == null )
-        {
-            restTemplate = new OAuth2RestTemplate( oAuth2ProtectedResourceDetails );
-        }
+        restTemplate = new OAuth2RestTemplate( oAuth2ProtectedResourceDetails );
     }
 }

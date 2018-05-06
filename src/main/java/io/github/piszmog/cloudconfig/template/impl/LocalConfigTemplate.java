@@ -71,10 +71,7 @@ public class LocalConfigTemplate extends ConfigTemplate
     {
         final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setReadTimeout( readTimeout );
-        if ( restTemplate == null )
-        {
-            restTemplate = new RestTemplate();
-        }
+        restTemplate = new RestTemplate();
         restTemplate.setRequestFactory( requestFactory );
         final String username = configClientProperties.getUsername();
         final String password = configClientProperties.getPassword();
