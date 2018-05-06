@@ -38,7 +38,7 @@ public class EncryptConfigClient extends SecurityConfigClient
      * @return True if encryption is enabled or false if it is not.
      * @throws ConfigException when an error occurs when determining if encryption is enabled
      */
-    public boolean encryptionEnabled() throws ConfigException
+    public boolean isEncryptionEnabled() throws ConfigException
     {
         final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive( PATH_ENCRYPT_STATUS,
                 HttpMethod.GET,
