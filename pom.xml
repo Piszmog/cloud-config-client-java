@@ -18,6 +18,7 @@
 
     <name>cloud-config-client</name>
     <description>Client for Spring Cloud Config Server</description>
+    <url>https://github.com/Piszmog/cloud-config-client</url>
 
     <!--====================================-->
     <!-- Properties -->
@@ -31,6 +32,9 @@
         <!--Plugins-->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
+        <!--Profiles-->
+        <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
         <!--Dependency Management-->
         <spring-cloud-services-dependencies.version>1.5.0.RELEASE</spring-cloud-services-dependencies.version>
         <spring-boot-dependencies.version>1.5.12.RELEASE</spring-boot-dependencies.version>
@@ -130,6 +134,30 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
                 <version>${gmavenplus-plugin.version}</version>
@@ -143,6 +171,45 @@
             </plugin>
         </plugins>
     </build>
+
+    <!--====================================-->
+    <!-- Profiles -->
+    <!--====================================-->
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${nexus-staging-maven-plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <!--====================================-->
     <!-- Distribution Information -->
@@ -178,6 +245,17 @@
         <developer>
             <name>Piszmog</name>
             <email>piszmogcode@gmail.com</email>
+            <organizationUrl>https://github.com/Piszmog/cloud-config-client</organizationUrl>
         </developer>
     </developers>
+
+    <!--====================================-->
+    <!-- Source Control Management -->
+    <!--====================================-->
+
+    <scm>
+        <connection>scm:git:git://github.com/Piszmog/cloud-config-client.git</connection>
+        <developerConnection>scm:git:ssh://github.com/Piszmog/cloud-config-client.git</developerConnection>
+        <url>https://github.com/Piszmog/cloud-config-client/tree/master</url>
+    </scm>
 </project>
