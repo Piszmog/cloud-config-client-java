@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
 import spock.lang.Specification
 
 /**
+ * Unit tests for {@link OAuth2ConfigTemplate}
+ *
  * Created by Piszmog on 5/5/2018
  */
 class OAuth2ConfigTemplateSpec extends Specification
