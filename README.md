@@ -1,6 +1,7 @@
 # Config Server Commons
 
-[![Maven Central]()
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.piszmog/cloud-config-client/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.piszmog/cloud-config-client)
+
 
 ## Description
 Spring's Config Server provides way to externalize configurations of applications. Spring's
@@ -17,6 +18,9 @@ The Spring dependencies of this library are,
 | :---: | :---: |
 | Spring Boot | 1.5.12 |
 | Spring Cloud Services | 1.5.0.RELEASE |
+
+See [Cloud Config Client Autoconfig](https://github.com/Piszmog/cloud-config-client-autoconfig) 
+for Spring ready library.
 
 ### Config Clients
 All Config Clients require a `ConfigTemplate`. `ConfigTemplate` is a wrapper for
