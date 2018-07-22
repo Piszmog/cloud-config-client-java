@@ -1,10 +1,9 @@
 package io.github.piszmog.cloudconfig.client.impl;
 
 import io.github.piszmog.cloudconfig.ConfigException;
-import io.github.piszmog.cloudconfig.template.ConfigTemplate;
 import io.github.piszmog.cloudconfig.client.ConfigClient;
+import io.github.piszmog.cloudconfig.template.ConfigTemplate;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
@@ -21,7 +20,7 @@ public class FileConfigClient extends ConfigClient
 
     private static final String PATH = "/{name}/{profile}/{label}/{file}";
     private static final String VALUE_DEFAULT = "default";
-    private static final String VALUE_DEFAULT_LABEL = "label";
+    private static final String VALUE_DEFAULT_BRANCH = "master";
 
     // ============================================================
     // Constructors:
@@ -42,8 +41,7 @@ public class FileConfigClient extends ConfigClient
     // ============================================================
 
     /**
-     * Retrieves the file matching the specified file name from the Config Server using {@link ConfigClientProperties}
-     * values for the GIT branch.
+     * Retrieves the file matching the specified file name from the root of the {@value VALUE_DEFAULT_BRANCH} branch.
      *
      * @param fileName  the name of the file to retrieve
      * @param classType the class type the data of the file will be converted to
@@ -51,16 +49,16 @@ public class FileConfigClient extends ConfigClient
      * @return The file converted to the specified class type.
      * @throws ConfigException when an error occurs when retrieving the specified file
      */
-    public <T> T getFile( final String fileName, final Class<T> classType ) throws ConfigException
+    public <T> T getFileFromMaster( final String fileName, final Class<T> classType ) throws ConfigException
     {
         //
         // Use the configClientProperties value for label or 'master' if configClientProperties has no label
         //
-        return getFile( fileName, null, classType );
+        return getFileFromBranch( fileName, VALUE_DEFAULT_BRANCH, classType );
     }
 
     /**
-     * Retrieves the file matching the specified file name and on the specified branch.
+     * Retrieves the file matching the specified file name and on the root of the specified branch.
      *
      * @param fileName  the name of the file to retrieve
      * @param branch    the GIT branch to retrieve the file from
@@ -69,18 +67,29 @@ public class FileConfigClient extends ConfigClient
      * @return The file converted to the specified class type.
      * @throws ConfigException when an error occurs when retrieving the specified file
      */
-    public <T> T getFile( final String fileName, final String branch, final Class<T> classType ) throws ConfigException
+    public <T> T getFileFromBranch( final String fileName, final String branch, final Class<T> classType ) throws ConfigException
+    {
+        return getFileFromBranch( fileName, branch, null, classType );
+    }
+
+    /**
+     * Retrieves the file matching the specified file name and on the specified branch in the specified directory.
+     *
+     * @param fileName      the name of the file to retrieve
+     * @param branch        the GIT branch to retrieve the file from
+     * @param directoryPath the directory to retrieve the file from
+     * @param classType     the class type the data of the file will be converted to
+     * @param <T>           the class type
+     * @return The file converted to the specified class type.
+     * @throws ConfigException when an error occurs when retrieving the specified file
+     */
+    public <T> T getFileFromBranch( final String fileName, final String branch, final String directoryPath, final Class<T> classType ) throws ConfigException
     {
         if ( !StringUtils.isNotBlank( fileName ) )
         {
             throw new IllegalArgumentException( "No file supplied to look up." );
         }
         String applicationName = configTemplate.getName();
-        String label = branch;
-        if ( StringUtils.isBlank( branch ) )
-        {
-            label = configTemplate.getLabel();
-        }
         String profile = configTemplate.getProfile();
         //
         // If the application name is not specified, use 'default'
@@ -96,14 +105,20 @@ public class FileConfigClient extends ConfigClient
         {
             profile = VALUE_DEFAULT;
         }
-        //
-        // If no specific branch is used, default to label -- maybe the config server knows
-        //
+        String label = branch;
+        if ( StringUtils.isBlank( branch ) )
+        {
+            label = configTemplate.getLabel();
+        }
         if ( StringUtils.isBlank( label ) )
         {
-            label = VALUE_DEFAULT_LABEL;
+            label = VALUE_DEFAULT_BRANCH;
         }
-        ResponseEntity<T> responseEntity = configTemplate.sendAndReceive( PATH,
+        if ( StringUtils.isNotBlank( directoryPath ) )
+        {
+            label = label + "/" + directoryPath;
+        }
+        final ResponseEntity<T> responseEntity = configTemplate.sendAndReceive( PATH,
                 HttpMethod.GET,
                 null,
                 null,
@@ -111,6 +126,56 @@ public class FileConfigClient extends ConfigClient
                 applicationName,
                 profile,
                 label,
+                fileName );
+        return responseEntity.getBody();
+    }
+
+    /**
+     * Retrieves the file matching the specified file name and in the Config Server's default branch in the specified
+     * directory.
+     *
+     * @param fileName      the name of the file to retrieve
+     * @param directoryPath the directory to retrieve the file from
+     * @param classType     the class type the data of the file will be converted to
+     * @param <T>           the class type
+     * @return The file converted to the specified class type.
+     * @throws ConfigException when an error occurs when retrieving the specified file
+     */
+    public <T> T getFileFromDefaultBranch( final String fileName, final String directoryPath, final Class<T> classType ) throws ConfigException
+    {
+        if ( !StringUtils.isNotBlank( fileName ) )
+        {
+            throw new IllegalArgumentException( "No file supplied to look up." );
+        }
+        if ( !StringUtils.isNotBlank( directoryPath ) )
+        {
+            throw new IllegalArgumentException( "Files are unable to be located at the root. A directory path must be specified." );
+        }
+        String applicationName = configTemplate.getName();
+        String profile = configTemplate.getProfile();
+        //
+        // If the application name is not specified, use 'default'
+        //
+        if ( StringUtils.isBlank( applicationName ) )
+        {
+            applicationName = VALUE_DEFAULT;
+        }
+        //
+        // If no profile is specified, use 'default'
+        //
+        if ( StringUtils.isBlank( profile ) )
+        {
+            profile = VALUE_DEFAULT;
+        }
+        final ResponseEntity<T> responseEntity;
+        responseEntity = configTemplate.sendAndReceive( PATH + "?useDefaultLabel=true",
+                HttpMethod.GET,
+                null,
+                null,
+                classType,
+                applicationName,
+                profile,
+                directoryPath,
                 fileName );
         return responseEntity.getBody();
     }

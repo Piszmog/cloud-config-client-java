@@ -42,6 +42,13 @@ Client for retrieving files from the Config Server.
 The Config Server today retrieves `.yml` and `.properties` files, but is unable
 to retrieve `.json`, `.txt`, and etc...
 
+##### Specific Branch
+File can only be retried from the root of the repo if a specific branch name is provided. This is a limitation on how the endpoints
+for the Config Server are set up.
+
+##### Default Branch
+To retrieve files from the Config Server's default branch, the files must be in a subdirectory.
+
 #### PublicKeyClient
 Client for retrieving the Public Key from the Config Server.
 
@@ -76,14 +83,14 @@ All environment specific endpoints dealing with loading configuration files to a
 | :---: | :---: | :---: | :---: |
 |Retrieve Configuration |GET|`/{name}/{profiles:.*[^-].*}`|Retrieves the configuration file matching the regex expression on the profile for the application name |
 |Retrieve Configuration |GET|`/{name}/{profiles}/{label:.*}`|Retrieves the configuration file matching the regex expression on the label for the application name and profile|
-|Retrieve Properties Configuration |GET|`/{name}-{profiles}.properties`|Retrieves the properties file matching application name and profile|
-|Retrieve Properties Configuration |GET|`/{label}/{name}-{profiles}.properties`|Retrieves the properties file matching application name, profile, and label|
-|Retrieve JSON Configuration |GET|`{name}-{profiles}.json`|Retrieves the JSON file matching application name and profile|
-|Retrieve JSON Configuration |GET|`/{label}/{name}-{profiles}.json`|Retrieves the JSON file matching application name, profile, and label|
-|Retrieve YML Configuration |GET|`/{name}-{profiles}.yml`|Retrieves the YML file matching application name and profile|
-|Retrieve YAML Configuration |GET|`/{name}-{profiles}.yaml`|Retrieves the YAML file matching application name and profile|
-|Retrieve YML Configuration |GET|`/{label}/{name}-{profiles}.yml`|Retrieves the YML file matching application name, profile, and label|
-|Retrieve YAML Configuration |GET|`/{label}/{name}-{profiles}.yaml`|Retrieves the YAML file matching application name, profile, and label|
+|Retrieve Properties Configuration |GET|`/{name}-{profiles}.properties`|Retrieves the application properties in Properties format|
+|Retrieve Properties Configuration |GET|`/{label}/{name}-{profiles}.properties`|Retrieves the application properties in Properties format|
+|Retrieve JSON Configuration |GET|`{name}-{profiles}.json`|Retrieves the application properties in JSON format|
+|Retrieve JSON Configuration |GET|`/{label}/{name}-{profiles}.json`|Retrieves the application properties in JSON format|
+|Retrieve YML Configuration |GET|`/{name}-{profiles}.yml`|Retrieves the application properties in YML format
+|Retrieve YAML Configuration |GET|`/{name}-{profiles}.yaml`|Retrieves the application properties in YAML format|
+|Retrieve YML Configuration |GET|`/{label}/{name}-{profiles}.yml`|Retrieves the application properties in YML format|
+|Retrieve YAML Configuration |GET|`/{label}/{name}-{profiles}.yaml`|Retrieves the application properties in YAML format|
 
 Where,  
 
@@ -98,7 +105,7 @@ All resource specific endpoints dealing with loading files.
 
 | Name | Operation | Endpoint Path | Parameters | Description |
 | :---: | :---: | :---: | :---: | :---: |
-|Retrieve Resource |GET|`/{name}/{profile}/{label}/**`| `resolvePlaceholders` - boolean |Retrieves the resource of the specified application name, profile, label, and resource name|
+|Retrieve Resource |GET|`/{name}/{profile}/{label}/**`| `useDefaultBranch` - boolean |Retrieves the resource of the specified application name, profile, label, and resource name from the default branch|
 |Retrieve Resource |GET|`/{name}/{profile}/{label}/**`| NA |Retrieves the resource of the specified application name, profile, label, and resource name|
 
 Where,  
