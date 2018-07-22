@@ -72,6 +72,7 @@ Where,
 ##### Environment
 All environment specific endpoints dealing with loading configuration files to applications on their startup. 
 
+//todo -- .json gets environment as a json/yml/properties
 | Name | Operation | Endpoint Path | Description |
 | :---: | :---: | :---: | :---: |
 |Retrieve Configuration |GET|`/{name}/{profiles:.*[^-].*}`|Retrieves the configuration file matching the regex expression on the profile for the application name |
