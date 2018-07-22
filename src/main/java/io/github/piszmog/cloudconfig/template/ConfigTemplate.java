@@ -94,7 +94,7 @@ public abstract class ConfigTemplate
         if ( !responseEntity.getStatusCode().is2xxSuccessful() )
         {
             throw new ConfigException( "Failed to perform " + method.name() + " at " +
-                    urlPath + "on the Config Server. " +
+                    urlPath + " on the Config Server. " +
                     "Received Status " + responseEntity.getStatusCode() );
         }
         return responseEntity;

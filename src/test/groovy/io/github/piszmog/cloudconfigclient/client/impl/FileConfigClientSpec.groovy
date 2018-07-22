@@ -34,14 +34,14 @@ class FileConfigClientSpec extends Specification
 
     def "a file is retrieved"()
     {
-        given: "a decryptConfigClient"
+        given: "a fileConfigClient"
         def fileConfigClient = new FileConfigClient( configTemplate )
 
         and: "a response entity"
         ResponseEntity responseEntity = Mock( ResponseEntity )
 
         when: "the file is retrieved"
-        def fileContent = fileConfigClient.getFile( "file name", String )
+        def fileContent = fileConfigClient.getFileFromMaster( "file name", String )
 
         then: "configTemplate retrieves the file"
         1 * configTemplate.sendAndReceive( _, _, _, _, _, _ ) >> responseEntity
@@ -53,14 +53,14 @@ class FileConfigClientSpec extends Specification
 
     def "a file is retrieved using a branch"()
     {
-        given: "a decryptConfigClient"
+        given: "a fileConfigClient"
         def fileConfigClient = new FileConfigClient( configTemplate )
 
         and: "a response entity"
         ResponseEntity responseEntity = Mock( ResponseEntity )
 
         when: "the file is retrieved"
-        def fileContent = fileConfigClient.getFile( "file name", "branch", String )
+        def fileContent = fileConfigClient.getFileFromBranch( "file name", "branch", String )
 
         then: "configTemplate retrieves the file"
         1 * configTemplate.sendAndReceive( _, _, _, _, _, _ ) >> responseEntity
@@ -72,11 +72,11 @@ class FileConfigClientSpec extends Specification
 
     def "no file name is provided"()
     {
-        given: "a decryptConfigClient"
+        given: "a fileConfigClient"
         def fileConfigClient = new FileConfigClient( configTemplate )
 
         when: "the file is retrieved"
-        fileConfigClient.getFile( null, String )
+        fileConfigClient.getFileFromMaster( null, String )
 
         then: "IllegalArgumentException is thrown"
         thrown( IllegalArgumentException )
@@ -84,11 +84,11 @@ class FileConfigClientSpec extends Specification
 
     def "a file is retrieved but an exception occurs"()
     {
-        given: "a decryptConfigClient"
+        given: "a fileConfigClient"
         def fileConfigClient = new FileConfigClient( configTemplate )
 
         when: "the file is retrieved"
-        fileConfigClient.getFile( "file name", String )
+        fileConfigClient.getFileFromMaster( "file name", String )
 
         then: "configTemplate retrieves the file but an exception is thrown"
         1 * configTemplate.sendAndReceive( _, _, _, _, _, _ ) >> {
@@ -97,5 +97,101 @@ class FileConfigClientSpec extends Specification
 
         and: "the exception is thrown"
         thrown( ConfigException )
+    }
+
+    def "a file is retrieved from null branch"()
+    {
+        given: "a fileConfigClient"
+        def fileConfigClient = new FileConfigClient( configTemplate )
+
+        and: "a response entity"
+        ResponseEntity responseEntity = Mock( ResponseEntity )
+
+        when: "the file is retrieved"
+        def fileContent = fileConfigClient.getFileFromBranch( "file name", null, String )
+
+        then: "configTemplate retrieves the file"
+        1 * configTemplate.sendAndReceive( _, _, _, _, _, _ ) >> responseEntity
+
+        and: "the file is returned"
+        1 * responseEntity.getBody() >> "file content"
+        fileContent == "file content"
+
+        and: "no label specified in template"
+        1 * configTemplate.getLabel(  ) >> null
+    }
+
+    def "a file is retrieved from specified branch in specified directory"()
+    {
+        given: "a fileConfigClient"
+        def fileConfigClient = new FileConfigClient( configTemplate )
+
+        and: "a response entity"
+        ResponseEntity responseEntity = Mock( ResponseEntity )
+
+        when: "the file is retrieved"
+        def fileContent = fileConfigClient.getFileFromBranch( "file name", "label", "directory", String )
+
+        then: "configTemplate retrieves the file"
+        1 * configTemplate.sendAndReceive( _, _, _, _, _, _ ) >> responseEntity
+
+        and: "the file is returned"
+        1 * responseEntity.getBody() >> "file content"
+        fileContent == "file content"
+    }
+
+    def "a file is retrieved from default branch"()
+    {
+        given: "a fileConfigClient"
+        def fileConfigClient = new FileConfigClient( configTemplate )
+
+        and: "a response entity"
+        ResponseEntity responseEntity = Mock( ResponseEntity )
+
+        when: "the file is retrieved"
+        def fileContent = fileConfigClient.getFileFromDefaultBranch( "file name", "directory", String )
+
+        then: "configTemplate retrieves the file"
+        1 * configTemplate.sendAndReceive( _, _, _, _, _, _ ) >> responseEntity
+
+        and: "the file is returned"
+        1 * responseEntity.getBody() >> "file content"
+        fileContent == "file content"
+    }
+
+    def "a file is not retrieved from default branch when file is not specified"()
+    {
+        given: "a fileConfigClient"
+        def fileConfigClient = new FileConfigClient( configTemplate )
+
+        and: "a response entity"
+        ResponseEntity responseEntity = Mock( ResponseEntity )
+
+        when: "the file is retrieved"
+        fileConfigClient.getFileFromDefaultBranch( null, "directory", String )
+
+        then: "configTemplate never attempts to retrieve file"
+        0 * configTemplate.sendAndReceive( _, _, _, _, _, _ ) >> responseEntity
+
+        and: "an exception is thrown"
+        thrown( IllegalArgumentException )
+    }
+
+    def "a file is not retrieved from default branch when directory is not specified"()
+    {
+        given: "a fileConfigClient"
+        def fileConfigClient = new FileConfigClient( configTemplate )
+
+        and: "a response entity"
+        ResponseEntity responseEntity = Mock( ResponseEntity )
+
+        when: "the file is retrieved"
+        fileConfigClient.getFileFromDefaultBranch( "file", null, String )
+
+        then: "configTemplate never attempts to retrieve file"
+        0 * configTemplate.sendAndReceive( _, _, _, _, _, _ ) >> responseEntity
+
+        and: "an exception is thrown"
+        thrown( IllegalArgumentException )
     }
 }
