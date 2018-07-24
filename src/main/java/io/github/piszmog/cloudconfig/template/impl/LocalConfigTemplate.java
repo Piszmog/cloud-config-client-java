@@ -7,10 +7,11 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.springframework.cloud.config.client.ConfigClientProperties.AUTHORIZATION;
 
 /**
  * Config template used when the config server is a local application.
@@ -24,7 +25,6 @@ public class LocalConfigTemplate extends ConfigTemplate
     // ============================================================
 
     private static final int DEFAULT_READ_TIMEOUT = ( 60 * 1000 * 3 ) + 5000;
-    private static final String HEADER_AUTHORIZATION = "Authorization";
 
     // ============================================================
     // Class Attributes:
@@ -73,25 +73,8 @@ public class LocalConfigTemplate extends ConfigTemplate
         requestFactory.setReadTimeout( readTimeout );
         restTemplate = new RestTemplate();
         restTemplate.setRequestFactory( requestFactory );
-        final String username = configClientProperties.getUsername();
-        final String password = configClientProperties.getPassword();
-        final String authorization = configClientProperties.getAuthorization();
-
         final Map<String, String> headers = new HashMap<>( configClientProperties.getHeaders() );
-
-        if ( password != null && authorization != null )
-        {
-            throw new RuntimeException( "You must set either 'password' or 'authorization.' Both cannot be used." );
-        }
-        if ( password != null )
-        {
-            byte[] token = Base64.getEncoder().encode( ( username + ":" + password ).getBytes() );
-            headers.put( HEADER_AUTHORIZATION, "Basic " + new String( token ) );
-        }
-        else if ( authorization != null )
-        {
-            headers.put( HEADER_AUTHORIZATION, authorization );
-        }
+        headers.remove( AUTHORIZATION );
         if ( !headers.isEmpty() )
         {
             this.restTemplate.setInterceptors( Collections.singletonList( new ConfigServicePropertySourceLocator.GenericRequestHeaderInterceptor( headers ) ) );

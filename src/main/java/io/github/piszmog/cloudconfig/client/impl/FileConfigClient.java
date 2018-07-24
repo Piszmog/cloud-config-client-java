@@ -118,8 +118,7 @@ public class FileConfigClient extends ConfigClient
         {
             label = label + "/" + directoryPath;
         }
-        final ResponseEntity<T> responseEntity = configTemplate.sendAndReceive( PATH,
-                HttpMethod.GET,
+        final ResponseEntity<T> responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, PATH,
                 null,
                 null,
                 classType,
@@ -168,8 +167,7 @@ public class FileConfigClient extends ConfigClient
             profile = VALUE_DEFAULT;
         }
         final ResponseEntity<T> responseEntity;
-        responseEntity = configTemplate.sendAndReceive( PATH + "?useDefaultLabel=true",
-                HttpMethod.GET,
+        responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, PATH + "?useDefaultLabel=true",
                 null,
                 null,
                 classType,
