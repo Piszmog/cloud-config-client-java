@@ -48,6 +48,7 @@ for the Config Server are set up.
 
 ##### Default Branch
 To retrieve files from the Config Server's default branch, the files must be in a subdirectory.
+* __Only compatible with Config Server version 1.4.0.RELEASE or greater__
 
 #### PublicKeyClient
 Client for retrieving the Public Key from the Config Server.
