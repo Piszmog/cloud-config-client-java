@@ -115,7 +115,7 @@ class ConfigTemplateSpec extends Specification
         HttpStatus httpStatus = HttpStatus.OK
 
         when: "configTemplate sends and receives a request"
-        testConfigTemplate.sendAndReceive( "url", HttpMethod.GET, null, null, String )
+        testConfigTemplate.sendAndReceive( HttpMethod.GET, "url", null, null, String )
 
         then: "response entity is returned"
         1 * restTemplate.exchange( _, _, _, _ ) >> responseEntity
@@ -142,7 +142,7 @@ class ConfigTemplateSpec extends Specification
         HttpStatus httpStatus = HttpStatus.OK
 
         when: "configTemplate sends and receives a request"
-        testConfigTemplate.sendAndReceive( "url", HttpMethod.GET, null, null, String )
+        testConfigTemplate.sendAndReceive( HttpMethod.GET, "url", null, null, String )
 
         then: "token is used"
         mockConfigClientProperties.getToken() >> "token"
@@ -163,7 +163,7 @@ class ConfigTemplateSpec extends Specification
         def testConfigTemplate = new TestConfigTemplate( configClientProperties, restTemplate )
 
         when: "configTemplate sends and receives a request"
-        testConfigTemplate.sendAndReceive( "url", HttpMethod.GET, null, null, String )
+        testConfigTemplate.sendAndReceive( HttpMethod.GET, "url", null, null, String )
 
         then: "RestClientException is thrown"
         1 * restTemplate.exchange( _, _, _, _ ) >> {
@@ -192,7 +192,7 @@ class ConfigTemplateSpec extends Specification
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR
 
         when: "configTemplate sends and receives a request"
-        testConfigTemplate.sendAndReceive( "url", HttpMethod.GET, null, null, String )
+        testConfigTemplate.sendAndReceive( HttpMethod.GET, "url", null, null, String )
 
         then: "token is used"
         mockConfigClientProperties.getToken() >> "token"
@@ -225,7 +225,7 @@ class ConfigTemplateSpec extends Specification
         HttpStatus httpStatus = HttpStatus.OK
 
         when: "configTemplate sends and receives a request"
-        testConfigTemplate.sendAndReceive( "url", HttpMethod.POST, requestBody, null, String )
+        testConfigTemplate.sendAndReceive( HttpMethod.POST, "url", requestBody, null, String )
 
         then: "response entity is returned"
         1 * restTemplate.exchange( _, _, _, _ ) >> responseEntity

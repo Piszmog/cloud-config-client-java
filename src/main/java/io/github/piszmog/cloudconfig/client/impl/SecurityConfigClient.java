@@ -61,8 +61,7 @@ abstract class SecurityConfigClient extends ConfigClient
         {
             applicationProfile = DEFAULT_PROFILE;
         }
-        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive( path,
-                HttpMethod.POST,
+        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive( HttpMethod.POST, path,
                 value,
                 null,
                 String.class,

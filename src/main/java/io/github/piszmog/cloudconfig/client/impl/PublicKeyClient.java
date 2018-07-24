@@ -78,8 +78,7 @@ public class PublicKeyClient extends ConfigClient
         {
             applicationProfile = DEFAULT_PROFILE;
         }
-        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive( PATH_PUBLIC_KEY,
-                HttpMethod.GET,
+        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, PATH_PUBLIC_KEY,
                 null,
                 null,
                 String.class,

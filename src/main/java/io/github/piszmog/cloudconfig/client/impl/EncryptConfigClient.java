@@ -40,8 +40,7 @@ public class EncryptConfigClient extends SecurityConfigClient
      */
     public boolean isEncryptionEnabled() throws ConfigException
     {
-        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive( PATH_ENCRYPT_STATUS,
-                HttpMethod.GET,
+        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, PATH_ENCRYPT_STATUS,
                 null,
                 null,
                 String.class );
