@@ -1,4 +1,4 @@
-# Config Server Commons
+# Cloud Config Client
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.piszmog/cloud-config-client/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.piszmog/cloud-config-client)
 
@@ -14,10 +14,19 @@ This library provides clients for utilizing all the endpoints in the Config Serv
 
 The Spring dependencies of this library are,
 
+__Cloud Config Client 2.x__ is compatible with
+
 | Dependency | Version |
 | :---: | :---: |
-| Spring Boot | 1.5.12 |
-| Spring Cloud Services | 1.5.0.RELEASE |
+| Spring Boot | 2.x.x |
+| Spring Cloud Services | 2.x.x.RELEASE |
+
+__Cloud Config Client 1.x__ is compatible with
+
+| Dependency | Version |
+| :---: | :---: |
+| Spring Boot | 1.5.x |
+| Spring Cloud Services | 1.5.x.RELEASE |
 
 See [Cloud Config Client Autoconfig](https://github.com/Piszmog/cloud-config-client-autoconfig) 
 for Spring ready library.
