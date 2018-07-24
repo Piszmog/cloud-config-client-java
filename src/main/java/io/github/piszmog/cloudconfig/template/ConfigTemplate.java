@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.springframework.cloud.config.client.ConfigClientProperties.TOKEN_HEADER;
 
@@ -89,12 +90,12 @@ public abstract class ConfigTemplate
         catch ( RestClientException e )
         {
             throw new ConfigException( "Failed to perform " + method.name() + " at " +
-                    urlPath + "on the Config Server.", e );
+                    expandUrl( urlPath, urlVariables ) + " on the Config Server.", e );
         }
         if ( !responseEntity.getStatusCode().is2xxSuccessful() )
         {
             throw new ConfigException( "Failed to perform " + method.name() + " at " +
-                    urlPath + " on the Config Server. " +
+                    expandUrl( urlPath, urlVariables ) + " on the Config Server. " +
                     "Received Status " + responseEntity.getStatusCode() );
         }
         return responseEntity;
@@ -150,5 +151,10 @@ public abstract class ConfigTemplate
             headers.add( TOKEN_HEADER, token );
         }
         return headers;
+    }
+
+    private String expandUrl( final String url, final Object... urlVariables )
+    {
+        return UriComponentsBuilder.fromPath( url ).buildAndExpand( urlVariables ).toUriString();
     }
 }
