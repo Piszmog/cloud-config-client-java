@@ -12,8 +12,6 @@ But the Config Client does not fully utilizes the Config Server's endpoints.
 
 This library provides clients for utilizing all the endpoints in the Config Server.
 
-The Spring dependencies of this library are,
-
 __Cloud Config Client 2.x__ is compatible with
 
 | Dependency | Version |
