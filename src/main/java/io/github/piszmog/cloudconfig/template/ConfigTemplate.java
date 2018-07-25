@@ -183,7 +183,7 @@ public abstract class ConfigTemplate
         }
         catch ( HttpClientErrorException e )
         {
-            if ( e.getStatusCode() == HttpStatus.NOT_FOUND )
+            if ( e.getStatusCode() != HttpStatus.NOT_FOUND )
             {
                 throw new ConfigException( "Failed to perform " + method.name() + " at " +
                         expandUrl( urlPath, urlVariables ) + " on the Config Server. " +

@@ -84,6 +84,10 @@ public class PublicKeyClient extends ConfigClient
                 String.class,
                 name,
                 applicationProfile );
+        if (responseEntity == null)
+        {
+            return null;
+        }
         return responseEntity.getBody();
     }
 }
