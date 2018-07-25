@@ -126,6 +126,10 @@ public class FileConfigClient extends ConfigClient
                 profile,
                 label,
                 fileName );
+        if (responseEntity == null)
+        {
+            return null;
+        }
         return responseEntity.getBody();
     }
 
@@ -175,6 +179,10 @@ public class FileConfigClient extends ConfigClient
                 profile,
                 directoryPath,
                 fileName );
+        if (responseEntity == null)
+        {
+            return null;
+        }
         return responseEntity.getBody();
     }
 }

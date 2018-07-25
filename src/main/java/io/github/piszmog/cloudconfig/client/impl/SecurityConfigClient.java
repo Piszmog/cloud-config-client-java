@@ -67,6 +67,10 @@ abstract class SecurityConfigClient extends ConfigClient
                 String.class,
                 name,
                 applicationProfile );
+        if (responseEntity == null)
+        {
+            return null;
+        }
         return responseEntity.getBody();
     }
 }
