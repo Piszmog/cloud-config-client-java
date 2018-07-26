@@ -79,6 +79,10 @@
             <optional>true</optional>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
         <!-- Tests -->
         <dependency>
             <groupId>org.spockframework</groupId>

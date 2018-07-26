@@ -43,30 +43,6 @@ class LocalConfigTemplateSpec extends Specification
         notThrown( RuntimeException )
     }
 
-    def "localConfigTemplate is initialized when username and password are null"()
-    {
-        given: "configClientProperties"
-        ConfigClientProperties mockConfigClientProperties = Mock( ConfigClientProperties )
-
-        and: "a localConfigTemplate"
-        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate( mockConfigClientProperties, 1 )
-
-        when: "localConfigTemplate is initialized"
-        localConfigTemplate.init()
-
-        then: "password is not null"
-        mockConfigClientProperties.getPassword() >> "password"
-
-        and: "authorization is not null"
-        mockConfigClientProperties.getAuthorization() >> "authorization"
-
-        and: "there are headers"
-        mockConfigClientProperties.getHeaders() >> new HashMap<String, String>()
-
-        and: "template is unable to be initialized"
-        thrown( RuntimeException )
-    }
-
     def "localConfigTemplate is initialized when username and password are not null"()
     {
         given: "configClientProperties"

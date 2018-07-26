@@ -48,5 +48,6 @@ public class OAuth2ConfigTemplate extends ConfigTemplate
     public void init()
     {
         restTemplate = new OAuth2RestTemplate( oAuth2ProtectedResourceDetails );
+        restTemplate.setRequestFactory( super.createHttpClientFactory( DEFAULT_READ_TIMEOUT ) );
     }
 }
