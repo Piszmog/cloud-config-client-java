@@ -3,7 +3,6 @@ package io.github.piszmog.cloudconfig.template.impl;
 import io.github.piszmog.cloudconfig.template.ConfigTemplate;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.cloud.config.client.ConfigServicePropertySourceLocator;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -20,12 +19,6 @@ import static org.springframework.cloud.config.client.ConfigClientProperties.AUT
  */
 public class LocalConfigTemplate extends ConfigTemplate
 {
-    // ============================================================
-    // Class Constants:
-    // ============================================================
-
-    private static final int DEFAULT_READ_TIMEOUT = ( 60 * 1000 * 3 ) + 5000;
-
     // ============================================================
     // Class Attributes:
     // ============================================================
@@ -69,10 +62,8 @@ public class LocalConfigTemplate extends ConfigTemplate
     @PostConstruct
     public void init()
     {
-        final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setReadTimeout( readTimeout );
         restTemplate = new RestTemplate();
-        restTemplate.setRequestFactory( requestFactory );
+        restTemplate.setRequestFactory( createHttpClientFactory( readTimeout ) );
         final Map<String, String> headers = new HashMap<>( configClientProperties.getHeaders() );
         headers.remove( AUTHORIZATION );
         if ( !headers.isEmpty() )

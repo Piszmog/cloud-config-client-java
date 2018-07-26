@@ -19,6 +19,8 @@ public class FileConfigClient extends ConfigClient
     // ============================================================
 
     private static final String PATH = "/{name}/{profile}/{label}/{file}";
+    private static final String PATH_NAME_PROFILE = "/{name}/{profile}/";
+    private static final String PATH_FILE = "/{file}";
     private static final String VALUE_DEFAULT = "default";
     private static final String VALUE_DEFAULT_BRANCH = "master";
 
@@ -118,15 +120,15 @@ public class FileConfigClient extends ConfigClient
         {
             label = label + "/" + directoryPath;
         }
-        final ResponseEntity<T> responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, PATH,
+        final String finalPath = PATH_NAME_PROFILE + label + PATH_FILE;
+        final ResponseEntity<T> responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, finalPath,
                 null,
                 null,
                 classType,
                 applicationName,
                 profile,
-                label,
                 fileName );
-        if (responseEntity == null)
+        if ( responseEntity == null )
         {
             return null;
         }
@@ -170,16 +172,16 @@ public class FileConfigClient extends ConfigClient
         {
             profile = VALUE_DEFAULT;
         }
+        final String finalPath = PATH_NAME_PROFILE + directoryPath + PATH_FILE;
         final ResponseEntity<T> responseEntity;
-        responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, PATH + "?useDefaultLabel=true",
+        responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, finalPath + "?useDefaultLabel=true",
                 null,
                 null,
                 classType,
                 applicationName,
                 profile,
-                directoryPath,
                 fileName );
-        if (responseEntity == null)
+        if ( responseEntity == null )
         {
             return null;
         }

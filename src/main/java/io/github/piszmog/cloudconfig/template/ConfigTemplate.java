@@ -2,9 +2,15 @@ package io.github.piszmog.cloudconfig.template;
 
 import io.github.piszmog.cloudconfig.ConfigException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.cloud.config.client.ConfigClientStateHolder;
 import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -24,7 +30,10 @@ public abstract class ConfigTemplate
     // Class Constants:
     // ============================================================
 
+    protected static final int DEFAULT_READ_TIMEOUT = ( 60 * 1000 * 3 ) + 5000;
     private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final int DEFAULT_MAX_PER_ROUTE = 10;
+    private static final int DEFAULT_TOTAL_CONNECTIONS = 100;
 
     // ============================================================
     // Class Attributes:
@@ -123,8 +132,51 @@ public abstract class ConfigTemplate
     }
 
     // ============================================================
+    // Protected:
+    // ============================================================
+
+    /**
+     * Creates a pooling request factory with the provided timeout. The pool of connections allow for 10 max connections
+     * per route with a total of 100 connections.
+     *
+     * @param timeout the timeout for the request timeout, connection timeout, and the socket timeout
+     * @return The client http request factory.
+     */
+    protected ClientHttpRequestFactory createHttpClientFactory( final int timeout )
+    {
+        final RequestConfig requestConfig = buildRequestConfig( timeout );
+        final PoolingHttpClientConnectionManager connectionManager = createConnectionManager();
+        final HttpClient httpClient = buildHttpClient( requestConfig, connectionManager );
+        return new HttpComponentsClientHttpRequestFactory( httpClient );
+    }
+    // ============================================================
     // Private Methods:
     // ============================================================
+
+    private RequestConfig buildRequestConfig( final int timeout )
+    {
+        return RequestConfig.custom()
+                .setConnectionRequestTimeout( timeout )
+                .setConnectTimeout( timeout )
+                .setSocketTimeout( timeout )
+                .build();
+    }
+
+    private PoolingHttpClientConnectionManager createConnectionManager()
+    {
+        final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+        connectionManager.setDefaultMaxPerRoute( DEFAULT_MAX_PER_ROUTE );
+        connectionManager.setMaxTotal( DEFAULT_TOTAL_CONNECTIONS );
+        return connectionManager;
+    }
+
+    private HttpClient buildHttpClient( final RequestConfig requestConfig, final PoolingHttpClientConnectionManager connectionManager )
+    {
+        return HttpClients.custom()
+                .setConnectionManager( connectionManager )
+                .setDefaultRequestConfig( requestConfig )
+                .build();
+    }
 
     private <T> ResponseEntity<T> sendAndReceiveToConfigServer( final HttpMethod method,
                                                                 final String urlPath,
@@ -187,7 +239,7 @@ public abstract class ConfigTemplate
             {
                 throw new ConfigException( "Failed to perform " + method.name() + " at " +
                         expandUrl( urlPath, urlVariables ) + " on the Config Server. " +
-                        "Received Status " + e.getStatusCode() );
+                        "Received Status " + e.getStatusCode(), e );
             }
         }
         catch ( ResourceAccessException e )
