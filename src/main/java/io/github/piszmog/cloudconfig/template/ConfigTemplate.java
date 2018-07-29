@@ -39,6 +39,7 @@ public abstract class ConfigTemplate
     // Class Attributes:
     // ============================================================
 
+    private final ThreadLocal<HttpHeaders> httpHeadersThreadLocal = new ThreadLocal<>();
     protected final ConfigClientProperties configClientProperties;
     protected RestTemplate restTemplate;
 
@@ -255,7 +256,14 @@ public abstract class ConfigTemplate
         HttpHeaders headers = httpHeaders;
         if ( headers == null )
         {
-            headers = new HttpHeaders();
+            HttpHeaders localHttpHeaders = httpHeadersThreadLocal.get();
+            if ( localHttpHeaders == null )
+            {
+                localHttpHeaders = new HttpHeaders();
+                httpHeadersThreadLocal.set( localHttpHeaders );
+            }
+            localHttpHeaders.clear();
+            headers = localHttpHeaders;
         }
         String authorization = configClientProperties.getHeaders().get( AUTHORIZATION );
         final String token = configClientProperties.getToken();
