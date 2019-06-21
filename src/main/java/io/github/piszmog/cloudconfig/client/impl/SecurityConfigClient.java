@@ -14,16 +14,8 @@ import org.springframework.http.ResponseEntity;
  */
 abstract class SecurityConfigClient extends ConfigClient
 {
-    // ============================================================
-    // Class Constants:
-    // ============================================================
-
     private static final String DEFAULT_PROFILE = "default";
     private static final String DEFAULT_APPLICATION = "application";
-
-    // ============================================================
-    // Constructors:
-    // ============================================================
 
     /**
      * Creates a new security client.
@@ -34,10 +26,6 @@ abstract class SecurityConfigClient extends ConfigClient
     {
         super( configTemplate );
     }
-
-    // ============================================================
-    // Protected
-    // ============================================================
 
     /**
      * Encrypts or decrypts the provided value.

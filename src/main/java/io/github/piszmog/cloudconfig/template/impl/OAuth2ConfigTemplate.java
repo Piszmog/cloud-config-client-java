@@ -14,15 +14,7 @@ import javax.annotation.PostConstruct;
  */
 public class OAuth2ConfigTemplate extends ConfigTemplate
 {
-    // ============================================================
-    // Class Attributes:
-    // ============================================================
-
     private final OAuth2ProtectedResourceDetails oAuth2ProtectedResourceDetails;
-
-    // ============================================================
-    // Constructors:
-    // ============================================================
 
     /**
      * Creates a config template using OAuth2 credentials.
@@ -36,10 +28,6 @@ public class OAuth2ConfigTemplate extends ConfigTemplate
         super( configClientProperties );
         this.oAuth2ProtectedResourceDetails = oAuth2ProtectedResourceDetails;
     }
-
-    // ============================================================
-    // Initializer Methods:
-    // ============================================================
 
     /**
      * Initializes the template with the OAuth2 credentials if the template is null.

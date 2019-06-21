@@ -12,25 +12,13 @@ import org.springframework.http.ResponseEntity;
  */
 public class EncryptConfigClient extends SecurityConfigClient
 {
-    // ============================================================
-    // Class Constants:
-    // ============================================================
-
     private static final String PATH_ENCRYPT_STATUS = "/encrypt/status";
     private static final String PATH_ENCRYPT = "/encrypt/{name}/{profiles}";
-
-    // ============================================================
-    // Constructors:
-    // ============================================================
 
     public EncryptConfigClient( final ConfigTemplate configTemplate )
     {
         super( configTemplate );
     }
-
-    // ============================================================
-    // Public Methods:
-    // ============================================================
 
     /**
      * Checks if encryption is enabled on the Config Server.

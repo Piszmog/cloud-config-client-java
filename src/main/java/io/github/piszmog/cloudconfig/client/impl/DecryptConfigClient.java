@@ -10,24 +10,12 @@ import io.github.piszmog.cloudconfig.template.ConfigTemplate;
  */
 public class DecryptConfigClient extends SecurityConfigClient
 {
-    // ============================================================
-    // Class Constants:
-    // ============================================================
-
     private static final String PATH_DECRYPT = "/decrypt/{name}/{profiles}";
-
-    // ============================================================
-    // Constructors:
-    // ============================================================
 
     public DecryptConfigClient( final ConfigTemplate configTemplate )
     {
         super( configTemplate );
     }
-
-    // ============================================================
-    // Public Methods:
-    // ============================================================
 
     /**
      * Decrypts the provided value by using the Config Server's Decryption.

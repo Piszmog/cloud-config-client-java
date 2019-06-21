@@ -14,26 +14,14 @@ import org.springframework.http.ResponseEntity;
  */
 public class PublicKeyClient extends ConfigClient
 {
-    // ============================================================
-    // Class Constants:
-    // ============================================================
-
     private static final String DEFAULT_PROFILE = "default";
     private static final String DEFAULT_APPLICATION = "application";
     private static final String PATH_PUBLIC_KEY = "/key/{name}/{profile}";
-
-    // ============================================================
-    // Constructors:
-    // ============================================================
 
     public PublicKeyClient( final ConfigTemplate configTemplate )
     {
         super( configTemplate );
     }
-
-    // ============================================================
-    // Public Methods:
-    // ============================================================
 
     /**
      * Retrieves the public key for the specified application and profile.
