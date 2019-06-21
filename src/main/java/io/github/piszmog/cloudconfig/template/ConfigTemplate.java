@@ -30,7 +30,6 @@ public abstract class ConfigTemplate
 {
     protected static final int DEFAULT_READ_TIMEOUT = ( 60 * 1000 * 3 ) + 5000;
     private static final String HEADER_AUTHORIZATION = "Authorization";
-    private static final String HEADER_ACCEPT_JSON = "application/json";
     private static final int DEFAULT_MAX_PER_ROUTE = 10;
     private static final int DEFAULT_TOTAL_CONNECTIONS = 100;
 
