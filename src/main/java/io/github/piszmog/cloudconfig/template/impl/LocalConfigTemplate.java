@@ -19,15 +19,7 @@ import static org.springframework.cloud.config.client.ConfigClientProperties.AUT
  */
 public class LocalConfigTemplate extends ConfigTemplate
 {
-    // ============================================================
-    // Class Attributes:
-    // ============================================================
-
     private final int readTimeout;
-
-    // ============================================================
-    // Constructors:
-    // ============================================================
 
     /**
      * Creates a local config template using the default read timeout.
@@ -51,10 +43,6 @@ public class LocalConfigTemplate extends ConfigTemplate
         super( configClientProperties );
         this.readTimeout = readTimeout;
     }
-
-    // ============================================================
-    // Initializer Methods:
-    // ============================================================
 
     /**
      * Initializes the template with the config server properties.

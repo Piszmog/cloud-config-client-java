@@ -9,15 +9,7 @@ import io.github.piszmog.cloudconfig.template.ConfigTemplate;
  */
 public abstract class ConfigClient
 {
-    // ============================================================
-    // Class Attributes:
-    // ============================================================
-
     protected final ConfigTemplate configTemplate;
-
-    // ============================================================
-    // Constructors:
-    // ============================================================
 
     /**
      * Creates a new client using the config template to connect to the config server.

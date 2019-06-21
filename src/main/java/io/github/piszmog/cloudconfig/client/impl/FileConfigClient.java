@@ -14,19 +14,10 @@ import org.springframework.http.ResponseEntity;
  */
 public class FileConfigClient extends ConfigClient
 {
-    // ============================================================
-    // Class Constants:
-    // ============================================================
-
-    private static final String PATH = "/{name}/{profile}/{label}/{file}";
     private static final String PATH_NAME_PROFILE = "/{name}/{profile}/";
     private static final String PATH_FILE = "/{file}";
     private static final String VALUE_DEFAULT = "default";
     private static final String VALUE_DEFAULT_BRANCH = "master";
-
-    // ============================================================
-    // Constructors:
-    // ============================================================
 
     /**
      * Creates a new file config client.
@@ -37,10 +28,6 @@ public class FileConfigClient extends ConfigClient
     {
         super( configTemplate );
     }
-
-    // ============================================================
-    // Public Methods:
-    // ============================================================
 
     /**
      * Retrieves the file matching the specified file name from the root of the {@value VALUE_DEFAULT_BRANCH} branch.

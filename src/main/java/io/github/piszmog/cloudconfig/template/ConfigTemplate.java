@@ -17,6 +17,8 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Collections;
+
 import static org.springframework.cloud.config.client.ConfigClientProperties.*;
 
 /**
@@ -26,26 +28,15 @@ import static org.springframework.cloud.config.client.ConfigClientProperties.*;
  */
 public abstract class ConfigTemplate
 {
-    // ============================================================
-    // Class Constants:
-    // ============================================================
-
     protected static final int DEFAULT_READ_TIMEOUT = ( 60 * 1000 * 3 ) + 5000;
     private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String HEADER_ACCEPT_JSON = "application/json";
     private static final int DEFAULT_MAX_PER_ROUTE = 10;
     private static final int DEFAULT_TOTAL_CONNECTIONS = 100;
-
-    // ============================================================
-    // Class Attributes:
-    // ============================================================
 
     private final ThreadLocal<HttpHeaders> httpHeadersThreadLocal = new ThreadLocal<>();
     protected final ConfigClientProperties configClientProperties;
     protected RestTemplate restTemplate;
-
-    // ============================================================
-    // Public Methods:
-    // ============================================================
 
     /**
      * creates a new template using the properties provided.
@@ -56,10 +47,6 @@ public abstract class ConfigTemplate
     {
         this.configClientProperties = configClientProperties;
     }
-
-    // ============================================================
-    // Public Methods:
-    // ============================================================
 
     /**
      * Send the HTTP request to the Config Server and return the response from the Server.
@@ -102,83 +89,6 @@ public abstract class ConfigTemplate
         return null;
     }
 
-    /**
-     * Retrieves the name of the application.
-     *
-     * @return The name of the application.
-     */
-    public String getName()
-    {
-        return configClientProperties.getName();
-    }
-
-    /**
-     * Retrieves the profile of the application.
-     *
-     * @return The profile.
-     */
-    public String getProfile()
-    {
-        return configClientProperties.getProfile();
-    }
-
-    /**
-     * Retrieves the label being used by the config server.
-     *
-     * @return The label of the config server.
-     */
-    public String getLabel()
-    {
-        return configClientProperties.getLabel();
-    }
-
-    // ============================================================
-    // Protected:
-    // ============================================================
-
-    /**
-     * Creates a pooling request factory with the provided timeout. The pool of connections allow for 10 max connections
-     * per route with a total of 100 connections.
-     *
-     * @param timeout the timeout for the request timeout, connection timeout, and the socket timeout
-     * @return The client http request factory.
-     */
-    protected ClientHttpRequestFactory createHttpClientFactory( final int timeout )
-    {
-        final RequestConfig requestConfig = buildRequestConfig( timeout );
-        final PoolingHttpClientConnectionManager connectionManager = createConnectionManager();
-        final HttpClient httpClient = buildHttpClient( requestConfig, connectionManager );
-        return new HttpComponentsClientHttpRequestFactory( httpClient );
-    }
-    // ============================================================
-    // Private Methods:
-    // ============================================================
-
-    private RequestConfig buildRequestConfig( final int timeout )
-    {
-        return RequestConfig.custom()
-                .setConnectionRequestTimeout( timeout )
-                .setConnectTimeout( timeout )
-                .setSocketTimeout( timeout )
-                .build();
-    }
-
-    private PoolingHttpClientConnectionManager createConnectionManager()
-    {
-        final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
-        connectionManager.setDefaultMaxPerRoute( DEFAULT_MAX_PER_ROUTE );
-        connectionManager.setMaxTotal( DEFAULT_TOTAL_CONNECTIONS );
-        return connectionManager;
-    }
-
-    private HttpClient buildHttpClient( final RequestConfig requestConfig, final PoolingHttpClientConnectionManager connectionManager )
-    {
-        return HttpClients.custom()
-                .setConnectionManager( connectionManager )
-                .setDefaultRequestConfig( requestConfig )
-                .build();
-    }
-
     private <T> ResponseEntity<T> sendAndReceiveToConfigServer( final HttpMethod method,
                                                                 final String urlPath,
                                                                 final Object[] urlVariables,
@@ -192,6 +102,7 @@ public abstract class ConfigTemplate
         String password = credentials.getPassword();
         HttpEntity<Object> entity;
         HttpHeaders headers = addSecurityHeaders( httpHeaders, username, password );
+        headers.setAccept( Collections.singletonList( MediaType.APPLICATION_JSON ) );
         addStateHeader( headers );
         if ( requestBody == null )
         {
@@ -201,12 +112,46 @@ public abstract class ConfigTemplate
         {
             entity = new HttpEntity<>( requestBody, headers );
         }
-        final ResponseEntity<T> responseEntity = sendAndReceive( method, urlPath, urlVariables, entity, configUri, classType );
-        if ( responseEntity != null )
+        return sendAndReceive( method, urlPath, urlVariables, entity, configUri, classType );
+    }
+
+    private HttpHeaders addSecurityHeaders( final HttpHeaders httpHeaders, final String username, final String password )
+    {
+        HttpHeaders headers = httpHeaders;
+        if ( headers == null )
         {
-            return responseEntity;
+            HttpHeaders localHttpHeaders = httpHeadersThreadLocal.get();
+            if ( localHttpHeaders == null )
+            {
+                localHttpHeaders = new HttpHeaders();
+                httpHeadersThreadLocal.set( localHttpHeaders );
+            }
+            localHttpHeaders.clear();
+            headers = localHttpHeaders;
         }
-        return null;
+        String authorization = configClientProperties.getHeaders().get( AUTHORIZATION );
+        final String token = configClientProperties.getToken();
+        //
+        // Set the token header if need to authenticate
+        //
+        if ( StringUtils.isNotBlank( token ) )
+        {
+            headers.add( TOKEN_HEADER, token );
+        }
+        if ( password != null && authorization != null )
+        {
+            throw new IllegalArgumentException( "You must set either 'password' or 'authorization.' Both cannot be used." );
+        }
+        if ( password != null )
+        {
+            byte[] credentialsEncoded = Base64Utils.encode( ( username + ":" + password ).getBytes() );
+            httpHeaders.add( HEADER_AUTHORIZATION, "Basic " + new String( credentialsEncoded ) );
+        }
+        else if ( authorization != null )
+        {
+            httpHeaders.add( HEADER_AUTHORIZATION, authorization );
+        }
+        return headers;
     }
 
     private void addStateHeader( final HttpHeaders headers )
@@ -250,48 +195,78 @@ public abstract class ConfigTemplate
         return responseEntity;
     }
 
-
-    private HttpHeaders addSecurityHeaders( final HttpHeaders httpHeaders, final String username, final String password )
-    {
-        HttpHeaders headers = httpHeaders;
-        if ( headers == null )
-        {
-            HttpHeaders localHttpHeaders = httpHeadersThreadLocal.get();
-            if ( localHttpHeaders == null )
-            {
-                localHttpHeaders = new HttpHeaders();
-                httpHeadersThreadLocal.set( localHttpHeaders );
-            }
-            localHttpHeaders.clear();
-            headers = localHttpHeaders;
-        }
-        String authorization = configClientProperties.getHeaders().get( AUTHORIZATION );
-        final String token = configClientProperties.getToken();
-        //
-        // Set the token header if need to authenticate
-        //
-        if ( StringUtils.isNotBlank( token ) )
-        {
-            headers.add( TOKEN_HEADER, token );
-        }
-        if ( password != null && authorization != null )
-        {
-            throw new IllegalArgumentException( "You must set either 'password' or 'authorization.' Both cannot be used." );
-        }
-        if ( password != null )
-        {
-            byte[] credentialsEncoded = Base64Utils.encode( ( username + ":" + password ).getBytes() );
-            httpHeaders.add( HEADER_AUTHORIZATION, "Basic " + new String( credentialsEncoded ) );
-        }
-        else if ( authorization != null )
-        {
-            httpHeaders.add( HEADER_AUTHORIZATION, authorization );
-        }
-        return headers;
-    }
-
     private String expandUrl( final String url, final Object... urlVariables )
     {
         return UriComponentsBuilder.fromPath( url ).buildAndExpand( urlVariables ).toUriString();
+    }
+
+    /**
+     * Retrieves the name of the application.
+     *
+     * @return The name of the application.
+     */
+    public String getName()
+    {
+        return configClientProperties.getName();
+    }
+
+    /**
+     * Retrieves the profile of the application.
+     *
+     * @return The profile.
+     */
+    public String getProfile()
+    {
+        return configClientProperties.getProfile();
+    }
+
+    /**
+     * Retrieves the label being used by the config server.
+     *
+     * @return The label of the config server.
+     */
+    public String getLabel()
+    {
+        return configClientProperties.getLabel();
+    }
+
+    /**
+     * Creates a pooling request factory with the provided timeout. The pool of connections allow for 10 max connections
+     * per route with a total of 100 connections.
+     *
+     * @param timeout the timeout for the request timeout, connection timeout, and the socket timeout
+     * @return The client http request factory.
+     */
+    protected ClientHttpRequestFactory createHttpClientFactory( final int timeout )
+    {
+        final RequestConfig requestConfig = buildRequestConfig( timeout );
+        final PoolingHttpClientConnectionManager connectionManager = createConnectionManager();
+        final HttpClient httpClient = buildHttpClient( requestConfig, connectionManager );
+        return new HttpComponentsClientHttpRequestFactory( httpClient );
+    }
+
+    private RequestConfig buildRequestConfig( final int timeout )
+    {
+        return RequestConfig.custom()
+                .setConnectionRequestTimeout( timeout )
+                .setConnectTimeout( timeout )
+                .setSocketTimeout( timeout )
+                .build();
+    }
+
+    private PoolingHttpClientConnectionManager createConnectionManager()
+    {
+        final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+        connectionManager.setDefaultMaxPerRoute( DEFAULT_MAX_PER_ROUTE );
+        connectionManager.setMaxTotal( DEFAULT_TOTAL_CONNECTIONS );
+        return connectionManager;
+    }
+
+    private HttpClient buildHttpClient( final RequestConfig requestConfig, final PoolingHttpClientConnectionManager connectionManager )
+    {
+        return HttpClients.custom()
+                .setConnectionManager( connectionManager )
+                .setDefaultRequestConfig( requestConfig )
+                .build();
     }
 }
