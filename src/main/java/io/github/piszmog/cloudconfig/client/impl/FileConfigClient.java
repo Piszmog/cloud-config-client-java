@@ -12,8 +12,7 @@ import org.springframework.http.ResponseEntity;
  * <p>
  * Created by Piszmog on 4/15/2018
  */
-public class FileConfigClient extends ConfigClient
-{
+public class FileConfigClient extends ConfigClient {
     private static final String PATH_NAME_PROFILE = "/{name}/{profile}/";
     private static final String PATH_FILE = "/{file}";
     private static final String VALUE_DEFAULT = "default";
@@ -24,9 +23,8 @@ public class FileConfigClient extends ConfigClient
      *
      * @param configTemplate the config server template
      */
-    public FileConfigClient( final ConfigTemplate configTemplate )
-    {
-        super( configTemplate );
+    public FileConfigClient(final ConfigTemplate configTemplate) {
+        super(configTemplate);
     }
 
     /**
@@ -38,12 +36,11 @@ public class FileConfigClient extends ConfigClient
      * @return The file converted to the specified class type.
      * @throws ConfigException when an error occurs when retrieving the specified file
      */
-    public <T> T getFileFromMaster( final String fileName, final Class<T> classType ) throws ConfigException
-    {
+    public <T> T getFileFromMaster(final String fileName, final Class<T> classType) throws ConfigException {
         //
         // Use the configClientProperties value for label or 'master' if configClientProperties has no label
         //
-        return getFileFromBranch( fileName, VALUE_DEFAULT_BRANCH, classType );
+        return getFileFromBranch(fileName, VALUE_DEFAULT_BRANCH, classType);
     }
 
     /**
@@ -56,9 +53,8 @@ public class FileConfigClient extends ConfigClient
      * @return The file converted to the specified class type.
      * @throws ConfigException when an error occurs when retrieving the specified file
      */
-    public <T> T getFileFromBranch( final String fileName, final String branch, final Class<T> classType ) throws ConfigException
-    {
-        return getFileFromBranch( fileName, branch, null, classType );
+    public <T> T getFileFromBranch(final String fileName, final String branch, final Class<T> classType) throws ConfigException {
+        return getFileFromBranch(fileName, branch, null, classType);
     }
 
     /**
@@ -72,51 +68,43 @@ public class FileConfigClient extends ConfigClient
      * @return The file converted to the specified class type.
      * @throws ConfigException when an error occurs when retrieving the specified file
      */
-    public <T> T getFileFromBranch( final String fileName, final String branch, final String directoryPath, final Class<T> classType ) throws ConfigException
-    {
-        if ( !StringUtils.isNotBlank( fileName ) )
-        {
-            throw new IllegalArgumentException( "No file supplied to look up." );
+    public <T> T getFileFromBranch(final String fileName, final String branch, final String directoryPath, final Class<T> classType) throws ConfigException {
+        if (!StringUtils.isNotBlank(fileName)) {
+            throw new IllegalArgumentException("No file supplied to look up.");
         }
         String applicationName = configTemplate.getName();
         String profile = configTemplate.getProfile();
         //
         // If the application name is not specified, use 'default'
         //
-        if ( StringUtils.isBlank( applicationName ) )
-        {
+        if (StringUtils.isBlank(applicationName)) {
             applicationName = VALUE_DEFAULT;
         }
         //
         // If no profile is specified, use 'default'
         //
-        if ( StringUtils.isBlank( profile ) )
-        {
+        if (StringUtils.isBlank(profile)) {
             profile = VALUE_DEFAULT;
         }
         String label = branch;
-        if ( StringUtils.isBlank( branch ) )
-        {
+        if (StringUtils.isBlank(branch)) {
             label = configTemplate.getLabel();
         }
-        if ( StringUtils.isBlank( label ) )
-        {
+        if (StringUtils.isBlank(label)) {
             label = VALUE_DEFAULT_BRANCH;
         }
-        if ( StringUtils.isNotBlank( directoryPath ) )
-        {
+        if (StringUtils.isNotBlank(directoryPath)) {
             label = label + "/" + directoryPath;
         }
         final String finalPath = PATH_NAME_PROFILE + label + PATH_FILE;
-        final ResponseEntity<T> responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, finalPath,
+        final ResponseEntity<T> responseEntity = configTemplate.sendAndReceive(HttpMethod.GET, finalPath,
                 null,
                 null,
                 classType,
                 applicationName,
                 profile,
-                fileName );
-        if ( responseEntity == null )
-        {
+                fileName);
+        if (responseEntity == null) {
             return null;
         }
         return responseEntity.getBody();
@@ -133,43 +121,37 @@ public class FileConfigClient extends ConfigClient
      * @return The file converted to the specified class type.
      * @throws ConfigException when an error occurs when retrieving the specified file
      */
-    public <T> T getFileFromDefaultBranch( final String fileName, final String directoryPath, final Class<T> classType ) throws ConfigException
-    {
-        if ( !StringUtils.isNotBlank( fileName ) )
-        {
-            throw new IllegalArgumentException( "No file supplied to look up." );
+    public <T> T getFileFromDefaultBranch(final String fileName, final String directoryPath, final Class<T> classType) throws ConfigException {
+        if (!StringUtils.isNotBlank(fileName)) {
+            throw new IllegalArgumentException("No file supplied to look up.");
         }
-        if ( !StringUtils.isNotBlank( directoryPath ) )
-        {
-            throw new IllegalArgumentException( "Files are unable to be located at the root. A directory path must be specified." );
+        if (!StringUtils.isNotBlank(directoryPath)) {
+            throw new IllegalArgumentException("Files are unable to be located at the root. A directory path must be specified.");
         }
         String applicationName = configTemplate.getName();
         String profile = configTemplate.getProfile();
         //
         // If the application name is not specified, use 'default'
         //
-        if ( StringUtils.isBlank( applicationName ) )
-        {
+        if (StringUtils.isBlank(applicationName)) {
             applicationName = VALUE_DEFAULT;
         }
         //
         // If no profile is specified, use 'default'
         //
-        if ( StringUtils.isBlank( profile ) )
-        {
+        if (StringUtils.isBlank(profile)) {
             profile = VALUE_DEFAULT;
         }
         final String finalPath = PATH_NAME_PROFILE + directoryPath + PATH_FILE;
         final ResponseEntity<T> responseEntity;
-        responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, finalPath + "?useDefaultLabel=true",
+        responseEntity = configTemplate.sendAndReceive(HttpMethod.GET, finalPath + "?useDefaultLabel=true",
                 null,
                 null,
                 classType,
                 applicationName,
                 profile,
-                fileName );
-        if ( responseEntity == null )
-        {
+                fileName);
+        if (responseEntity == null) {
             return null;
         }
         return responseEntity.getBody();

@@ -8,13 +8,11 @@ import io.github.piszmog.cloudconfig.template.ConfigTemplate;
  * <p>
  * Created by Piszmog on 4/15/2018.
  */
-public class DecryptConfigClient extends SecurityConfigClient
-{
+public class DecryptConfigClient extends SecurityConfigClient {
     private static final String PATH_DECRYPT = "/decrypt/{name}/{profiles}";
 
-    public DecryptConfigClient( final ConfigTemplate configTemplate )
-    {
-        super( configTemplate );
+    public DecryptConfigClient(final ConfigTemplate configTemplate) {
+        super(configTemplate);
     }
 
     /**
@@ -24,9 +22,8 @@ public class DecryptConfigClient extends SecurityConfigClient
      * @return The decrypted value or null if unable to encrypt.
      * @throws ConfigException when an error occurs when decrypting the value
      */
-    public String decrypt( final String value ) throws ConfigException
-    {
-        return decrypt( value, configTemplate.getName(), configTemplate.getProfile() );
+    public String decrypt(final String value) throws ConfigException {
+        return decrypt(value, configTemplate.getName(), configTemplate.getProfile());
     }
 
     /**
@@ -38,9 +35,8 @@ public class DecryptConfigClient extends SecurityConfigClient
      * @return The decrypted value or null if unable to encrypt.
      * @throws ConfigException when an error occurs when decrypting the value
      */
-    public String decrypt( final String value, final String applicationName ) throws ConfigException
-    {
-        return decrypt( value, applicationName, configTemplate.getProfile() );
+    public String decrypt(final String value, final String applicationName) throws ConfigException {
+        return decrypt(value, applicationName, configTemplate.getProfile());
     }
 
     /**
@@ -52,8 +48,7 @@ public class DecryptConfigClient extends SecurityConfigClient
      * @return The decrypted value or null if unable to encrypt.
      * @throws ConfigException when an error occurs when decrypting the value
      */
-    public String decrypt( final String value, final String applicationName, final String profile ) throws ConfigException
-    {
-        return encryptOrDecrypt( PATH_DECRYPT, value, applicationName, profile );
+    public String decrypt(final String value, final String applicationName, final String profile) throws ConfigException {
+        return encryptOrDecrypt(PATH_DECRYPT, value, applicationName, profile);
     }
 }

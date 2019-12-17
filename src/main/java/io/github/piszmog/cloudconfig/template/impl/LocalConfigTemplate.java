@@ -17,8 +17,7 @@ import static org.springframework.cloud.config.client.ConfigClientProperties.AUT
  * <p>
  * Created by Piszmog on 5/5/2018
  */
-public class LocalConfigTemplate extends ConfigTemplate
-{
+public class LocalConfigTemplate extends ConfigTemplate {
     private final int readTimeout;
 
     /**
@@ -26,9 +25,8 @@ public class LocalConfigTemplate extends ConfigTemplate
      *
      * @param configClientProperties the config server properties.
      */
-    public LocalConfigTemplate( final ConfigClientProperties configClientProperties )
-    {
-        super( configClientProperties );
+    public LocalConfigTemplate(final ConfigClientProperties configClientProperties) {
+        super(configClientProperties);
         this.readTimeout = DEFAULT_READ_TIMEOUT;
     }
 
@@ -38,9 +36,8 @@ public class LocalConfigTemplate extends ConfigTemplate
      * @param configClientProperties the config server properties
      * @param readTimeout            the read timeout
      */
-    public LocalConfigTemplate( final ConfigClientProperties configClientProperties, final int readTimeout )
-    {
-        super( configClientProperties );
+    public LocalConfigTemplate(final ConfigClientProperties configClientProperties, final int readTimeout) {
+        super(configClientProperties);
         this.readTimeout = readTimeout;
     }
 
@@ -48,15 +45,13 @@ public class LocalConfigTemplate extends ConfigTemplate
      * Initializes the template with the config server properties.
      */
     @PostConstruct
-    public void init()
-    {
+    public void init() {
         restTemplate = new RestTemplate();
-        restTemplate.setRequestFactory( createHttpClientFactory( readTimeout ) );
-        final Map<String, String> headers = new HashMap<>( configClientProperties.getHeaders() );
-        headers.remove( AUTHORIZATION );
-        if ( !headers.isEmpty() )
-        {
-            this.restTemplate.setInterceptors( Collections.singletonList( new ConfigServicePropertySourceLocator.GenericRequestHeaderInterceptor( headers ) ) );
+        restTemplate.setRequestFactory(createHttpClientFactory(readTimeout));
+        final Map<String, String> headers = new HashMap<>(configClientProperties.getHeaders());
+        headers.remove(AUTHORIZATION);
+        if (!headers.isEmpty()) {
+            this.restTemplate.setInterceptors(Collections.singletonList(new ConfigServicePropertySourceLocator.GenericRequestHeaderInterceptor(headers)));
         }
     }
 }

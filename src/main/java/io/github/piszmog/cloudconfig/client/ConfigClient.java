@@ -7,8 +7,7 @@ import io.github.piszmog.cloudconfig.template.ConfigTemplate;
  * <p>
  * Created by Piszmog on 5/5/2018
  */
-public abstract class ConfigClient
-{
+public abstract class ConfigClient {
     protected final ConfigTemplate configTemplate;
 
     /**
@@ -16,8 +15,7 @@ public abstract class ConfigClient
      *
      * @param configTemplate the template used to call the server
      */
-    public ConfigClient( final ConfigTemplate configTemplate )
-    {
+    public ConfigClient(final ConfigTemplate configTemplate) {
         this.configTemplate = configTemplate;
     }
 }

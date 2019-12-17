@@ -12,8 +12,7 @@ import org.springframework.http.ResponseEntity;
  * <p>
  * Created by Piszmog on 5/5/2018
  */
-abstract class SecurityConfigClient extends ConfigClient
-{
+abstract class SecurityConfigClient extends ConfigClient {
     private static final String DEFAULT_PROFILE = "default";
     private static final String DEFAULT_APPLICATION = "application";
 
@@ -22,9 +21,8 @@ abstract class SecurityConfigClient extends ConfigClient
      *
      * @param configTemplate the template used to call the config server
      */
-    SecurityConfigClient( final ConfigTemplate configTemplate )
-    {
-        super( configTemplate );
+    SecurityConfigClient(final ConfigTemplate configTemplate) {
+        super(configTemplate);
     }
 
     /**
@@ -37,26 +35,22 @@ abstract class SecurityConfigClient extends ConfigClient
      * @return The encrypted value.
      * @throws ConfigException when an error occurs when encrypting or decrypting the value
      */
-    String encryptOrDecrypt( final String path, final String value, final String applicationName, final String profile ) throws ConfigException
-    {
+    String encryptOrDecrypt(final String path, final String value, final String applicationName, final String profile) throws ConfigException {
         String name = applicationName;
         String applicationProfile = profile;
-        if ( StringUtils.isBlank( name ) )
-        {
+        if (StringUtils.isBlank(name)) {
             name = DEFAULT_APPLICATION;
         }
-        if ( StringUtils.isBlank( applicationProfile ) )
-        {
+        if (StringUtils.isBlank(applicationProfile)) {
             applicationProfile = DEFAULT_PROFILE;
         }
-        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive( HttpMethod.POST, path,
+        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive(HttpMethod.POST, path,
                 value,
                 null,
                 String.class,
                 name,
-                applicationProfile );
-        if (responseEntity == null)
-        {
+                applicationProfile);
+        if (responseEntity == null) {
             return null;
         }
         return responseEntity.getBody();
