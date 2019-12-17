@@ -10,8 +10,7 @@ import spock.lang.Specification
  *
  * Created by Piszmog on 5/5/2018
  */
-class LocalConfigTemplateSpec extends Specification
-{
+class LocalConfigTemplateSpec extends Specification {
     // ============================================================
     // Class Attributes:
     // ============================================================
@@ -22,34 +21,31 @@ class LocalConfigTemplateSpec extends Specification
     // Setup:
     // ============================================================
 
-    def setup()
-    {
-        configClientProperties = new ConfigClientProperties( new StandardEnvironment() )
+    def setup() {
+        configClientProperties = new ConfigClientProperties(new StandardEnvironment())
     }
 
     // ============================================================
     // Tests:
     // ============================================================
 
-    def "localConfigTemplate is initialized"()
-    {
+    def "localConfigTemplate is initialized"() {
         given: "a localConfigTemplate"
-        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate( configClientProperties )
+        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate(configClientProperties)
 
         when: "localConfigTemplate is initialized"
         localConfigTemplate.init()
 
         then: "template is properly initialized"
-        notThrown( RuntimeException )
+        notThrown(RuntimeException)
     }
 
-    def "localConfigTemplate is initialized when username and password are not null"()
-    {
+    def "localConfigTemplate is initialized when username and password are not null"() {
         given: "configClientProperties"
-        ConfigClientProperties mockConfigClientProperties = Mock( ConfigClientProperties )
+        ConfigClientProperties mockConfigClientProperties = Mock(ConfigClientProperties)
 
         and: "a localConfigTemplate"
-        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate( mockConfigClientProperties )
+        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate(mockConfigClientProperties)
 
         when: "localConfigTemplate is initialized"
         localConfigTemplate.init()
@@ -62,16 +58,15 @@ class LocalConfigTemplateSpec extends Specification
         mockConfigClientProperties.getHeaders() >> new HashMap<String, String>()
 
         and: "template is properly initialized"
-        notThrown( RuntimeException )
+        notThrown(RuntimeException)
     }
 
-    def "localConfigTemplate is initialized when authorization is used"()
-    {
+    def "localConfigTemplate is initialized when authorization is used"() {
         given: "configClientProperties"
-        ConfigClientProperties mockConfigClientProperties = Mock( ConfigClientProperties )
+        ConfigClientProperties mockConfigClientProperties = Mock(ConfigClientProperties)
 
         and: "a localConfigTemplate"
-        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate( mockConfigClientProperties )
+        LocalConfigTemplate localConfigTemplate = new LocalConfigTemplate(mockConfigClientProperties)
 
         when: "localConfigTemplate is initialized"
         localConfigTemplate.init()
@@ -83,6 +78,6 @@ class LocalConfigTemplateSpec extends Specification
         mockConfigClientProperties.getHeaders() >> new HashMap<String, String>()
 
         and: "template is properly initialized"
-        notThrown( RuntimeException )
+        notThrown(RuntimeException)
     }
 }

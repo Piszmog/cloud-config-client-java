@@ -10,14 +10,12 @@ import org.springframework.http.ResponseEntity;
  * <p>
  * Created by Piszmog on 4/15/2018.
  */
-public class EncryptConfigClient extends SecurityConfigClient
-{
+public class EncryptConfigClient extends SecurityConfigClient {
     private static final String PATH_ENCRYPT_STATUS = "/encrypt/status";
     private static final String PATH_ENCRYPT = "/encrypt/{name}/{profiles}";
 
-    public EncryptConfigClient( final ConfigTemplate configTemplate )
-    {
-        super( configTemplate );
+    public EncryptConfigClient(final ConfigTemplate configTemplate) {
+        super(configTemplate);
     }
 
     /**
@@ -26,12 +24,11 @@ public class EncryptConfigClient extends SecurityConfigClient
      * @return True if encryption is enabled or false if it is not.
      * @throws ConfigException when an error occurs when determining if encryption is enabled
      */
-    public boolean isEncryptionEnabled() throws ConfigException
-    {
-        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, PATH_ENCRYPT_STATUS,
+    public boolean isEncryptionEnabled() throws ConfigException {
+        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive(HttpMethod.GET, PATH_ENCRYPT_STATUS,
                 null,
                 null,
-                String.class );
+                String.class);
         //
         // If null, then encryption is not enabled. It is not considered an error
         //
@@ -45,9 +42,8 @@ public class EncryptConfigClient extends SecurityConfigClient
      * @return The encrypted value or null if unable to encrypt.
      * @throws ConfigException when an error occurs when encrypting the value
      */
-    public String encrypt( final String value ) throws ConfigException
-    {
-        return encrypt( value, configTemplate.getName(), configTemplate.getProfile() );
+    public String encrypt(final String value) throws ConfigException {
+        return encrypt(value, configTemplate.getName(), configTemplate.getProfile());
     }
 
     /**
@@ -58,9 +54,8 @@ public class EncryptConfigClient extends SecurityConfigClient
      * @return The encrypted value or null if unable to encrypt.
      * @throws ConfigException when an error occurs when encrypting the value
      */
-    public String encrypt( final String value, final String applicationName ) throws ConfigException
-    {
-        return encrypt( value, applicationName, configTemplate.getProfile() );
+    public String encrypt(final String value, final String applicationName) throws ConfigException {
+        return encrypt(value, applicationName, configTemplate.getProfile());
     }
 
     /**
@@ -72,8 +67,7 @@ public class EncryptConfigClient extends SecurityConfigClient
      * @return The encrypted value or null if unable to encrypt.
      * @throws ConfigException when an error occurs when encrypting the value
      */
-    public String encrypt( final String value, final String applicationName, final String profile ) throws ConfigException
-    {
-        return encryptOrDecrypt( PATH_ENCRYPT, value, applicationName, profile );
+    public String encrypt(final String value, final String applicationName, final String profile) throws ConfigException {
+        return encryptOrDecrypt(PATH_ENCRYPT, value, applicationName, profile);
     }
 }

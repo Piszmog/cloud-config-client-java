@@ -17,8 +17,7 @@ import spock.lang.Specification
  *
  * Created by Piszmog on 5/5/2018
  */
-class ConfigTemplateSpec extends Specification
-{
+class ConfigTemplateSpec extends Specification {
     // ============================================================
     // Class Attributes:
     // ============================================================
@@ -29,29 +28,27 @@ class ConfigTemplateSpec extends Specification
     // Setup:
     // ============================================================
 
-    def setup()
-    {
-        configClientProperties = new ConfigClientProperties( new StandardEnvironment() )
-        configClientProperties.setUri( "testURL" )
+    def setup() {
+        configClientProperties = new ConfigClientProperties(new StandardEnvironment())
+        configClientProperties.setUri("testURL")
     }
 
     // ============================================================
     // Tests:
     // ============================================================
 
-    def "configTemplate retrieves name"()
-    {
+    def "configTemplate retrieves name"() {
         given: "configClientProperties"
-        ConfigClientProperties mockConfigClientProperties = Stub( ConfigClientProperties )
+        ConfigClientProperties mockConfigClientProperties = Stub(ConfigClientProperties)
 
         and: "name is returned"
         mockConfigClientProperties.getName() >> "name"
 
         and: "a restTemplate"
-        RestTemplate restTemplate = Mock( RestTemplate )
+        RestTemplate restTemplate = Mock(RestTemplate)
 
         and: "a configTemplate"
-        def testConfigTemplate = new TestConfigTemplate( mockConfigClientProperties, restTemplate )
+        def testConfigTemplate = new TestConfigTemplate(mockConfigClientProperties, restTemplate)
 
         when: "name is retrieved from the client properties"
         def name = testConfigTemplate.getName()
@@ -60,19 +57,18 @@ class ConfigTemplateSpec extends Specification
         name == "name"
     }
 
-    def "configTemplate retrieves profile"()
-    {
+    def "configTemplate retrieves profile"() {
         given: "configClientProperties"
-        ConfigClientProperties mockConfigClientProperties = Stub( ConfigClientProperties )
+        ConfigClientProperties mockConfigClientProperties = Stub(ConfigClientProperties)
 
         and: "name is returned"
         mockConfigClientProperties.getProfile() >> "profile"
 
         and: "a restTemplate"
-        RestTemplate restTemplate = Mock( RestTemplate )
+        RestTemplate restTemplate = Mock(RestTemplate)
 
         and: "a configTemplate"
-        def testConfigTemplate = new TestConfigTemplate( mockConfigClientProperties, restTemplate )
+        def testConfigTemplate = new TestConfigTemplate(mockConfigClientProperties, restTemplate)
 
         when: "profile is retrieved from the client properties"
         def profile = testConfigTemplate.getProfile()
@@ -81,19 +77,18 @@ class ConfigTemplateSpec extends Specification
         profile == "profile"
     }
 
-    def "configTemplate retrieves label"()
-    {
+    def "configTemplate retrieves label"() {
         given: "configClientProperties"
-        ConfigClientProperties mockConfigClientProperties = Stub( ConfigClientProperties )
+        ConfigClientProperties mockConfigClientProperties = Stub(ConfigClientProperties)
 
         and: "label is returned"
         mockConfigClientProperties.getLabel() >> "label"
 
         and: "a restTemplate"
-        RestTemplate restTemplate = Mock( RestTemplate )
+        RestTemplate restTemplate = Mock(RestTemplate)
 
         and: "a configTemplate"
-        def testConfigTemplate = new TestConfigTemplate( mockConfigClientProperties, restTemplate )
+        def testConfigTemplate = new TestConfigTemplate(mockConfigClientProperties, restTemplate)
 
         when: "label is retrieved from the client properties"
         def profile = testConfigTemplate.getLabel()
@@ -103,142 +98,137 @@ class ConfigTemplateSpec extends Specification
     }
 
     @Ignore
-    def "configTemplate performs a GET"()
-    {
+    def "configTemplate performs a GET"() {
         given: "a restTemplate"
-        RestTemplate restTemplate = Mock( RestTemplate )
+        RestTemplate restTemplate = Mock(RestTemplate)
 
         and: "a configTemplate"
-        def testConfigTemplate = new TestConfigTemplate( configClientProperties, restTemplate )
+        def testConfigTemplate = new TestConfigTemplate(configClientProperties, restTemplate)
 
         and: "a responseEntity"
-        ResponseEntity responseEntity = Mock( ResponseEntity )
+        ResponseEntity responseEntity = Mock(ResponseEntity)
 
         and: "a status code"
         HttpStatus httpStatus = HttpStatus.OK
 
         when: "configTemplate sends and receives a request"
-        testConfigTemplate.sendAndReceive( HttpMethod.GET, "url", null, null, String )
+        testConfigTemplate.sendAndReceive(HttpMethod.GET, "url", null, null, String)
 
         then: "response entity is returned"
-        1 * restTemplate.exchange( _, _, _, _ ) >> responseEntity
+        1 * restTemplate.exchange(_, _, _, _) >> responseEntity
 
         and: "response entity returns status code OK"
         responseEntity.getStatusCode() >> httpStatus
     }
 
     @Ignore
-    def "configTemplate performs a GET using a token"()
-    {
+    def "configTemplate performs a GET using a token"() {
         given: "configClientProperties"
-        ConfigClientProperties mockConfigClientProperties = Stub( ConfigClientProperties )
+        ConfigClientProperties mockConfigClientProperties = Stub(ConfigClientProperties)
 
         and: "there is a url"
-        mockConfigClientProperties.setUri( "URL" )
+        mockConfigClientProperties.setUri("URL")
 
         and: "a restTemplate"
-        RestTemplate restTemplate = Mock( RestTemplate )
+        RestTemplate restTemplate = Mock(RestTemplate)
 
         and: "a configTemplate"
-        def testConfigTemplate = new TestConfigTemplate( mockConfigClientProperties, restTemplate )
+        def testConfigTemplate = new TestConfigTemplate(mockConfigClientProperties, restTemplate)
 
         and: "a responseEntity"
-        ResponseEntity responseEntity = Mock( ResponseEntity )
+        ResponseEntity responseEntity = Mock(ResponseEntity)
 
         and: "a status code"
         HttpStatus httpStatus = HttpStatus.OK
 
         when: "configTemplate sends and receives a request"
-        testConfigTemplate.sendAndReceive( HttpMethod.GET, "url", null, null, String )
+        testConfigTemplate.sendAndReceive(HttpMethod.GET, "url", null, null, String)
 
         then: "token is used"
         mockConfigClientProperties.getToken() >> "token"
 
         and: "response entity is returned"
-        1 * restTemplate.exchange( _, _, _, _ ) >> responseEntity
+        1 * restTemplate.exchange(_, _, _, _) >> responseEntity
 
         and: "response entity returns status code OK"
         responseEntity.getStatusCode() >> httpStatus
     }
 
     @Ignore
-    def "configTemplate performs a GET but RestClientException is thrown"()
-    {
+    def "configTemplate performs a GET but RestClientException is thrown"() {
         given: "a restTemplate"
-        RestTemplate restTemplate = Mock( RestTemplate )
+        RestTemplate restTemplate = Mock(RestTemplate)
 
         and: "a configTemplate"
-        def testConfigTemplate = new TestConfigTemplate( configClientProperties, restTemplate )
+        def testConfigTemplate = new TestConfigTemplate(configClientProperties, restTemplate)
 
         when: "configTemplate sends and receives a request"
-        testConfigTemplate.sendAndReceive( HttpMethod.GET, "url", null, null, String )
+        testConfigTemplate.sendAndReceive(HttpMethod.GET, "url", null, null, String)
 
         then: "RestClientException is thrown"
-        1 * restTemplate.exchange( _, _, _, _ ) >> {
-            throw new RestClientException( "Failed" )
+        1 * restTemplate.exchange(_, _, _, _) >> {
+            throw new RestClientException("Failed")
         }
 
         and: "ConfigException is thrown"
-        thrown( ConfigException )
+        thrown(ConfigException)
     }
 
     @Ignore
-    def "configTemplate performs a GET using a token but is unsuccessful"()
-    {
+    def "configTemplate performs a GET using a token but is unsuccessful"() {
         given: "configClientProperties"
-        ConfigClientProperties mockConfigClientProperties = Stub( ConfigClientProperties )
+        ConfigClientProperties mockConfigClientProperties = Stub(ConfigClientProperties)
 
         and: "a restTemplate"
-        RestTemplate restTemplate = Mock( RestTemplate )
+        RestTemplate restTemplate = Mock(RestTemplate)
 
         and: "a configTemplate"
-        def testConfigTemplate = new TestConfigTemplate( mockConfigClientProperties, restTemplate )
+        def testConfigTemplate = new TestConfigTemplate(mockConfigClientProperties, restTemplate)
 
         and: "a responseEntity"
-        ResponseEntity responseEntity = Mock( ResponseEntity )
+        ResponseEntity responseEntity = Mock(ResponseEntity)
 
         and: "a status code"
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR
 
         when: "configTemplate sends and receives a request"
-        testConfigTemplate.sendAndReceive( HttpMethod.GET, "url", null, null, String )
+        testConfigTemplate.sendAndReceive(HttpMethod.GET, "url", null, null, String)
 
         then: "token is used"
         mockConfigClientProperties.getToken() >> "token"
 
         and: "response entity is returned"
-        1 * restTemplate.exchange( _, _, _, _ ) >> responseEntity
+        1 * restTemplate.exchange(_, _, _, _) >> responseEntity
 
         and: "response entity returns status code INTERNAL_SERVER_ERROR"
         responseEntity.getStatusCode() >> httpStatus
 
         and: "ConfigException is thrown"
-        thrown( ConfigException )
+        thrown(ConfigException)
     }
 
     @Ignore
-    def "configTemplate performs a POST and sends a request body"()
-    {
+    def "configTemplate performs a POST and sends a request body"() {
         given: "a restTemplate"
-        RestTemplate restTemplate = Mock( RestTemplate )
+        RestTemplate restTemplate = Mock(RestTemplate)
 
         and: "a configTemplate"
-        def testConfigTemplate = new TestConfigTemplate( configClientProperties, restTemplate )
+        def testConfigTemplate = new TestConfigTemplate(configClientProperties, restTemplate)
 
-        and:"a request body"
+        and: "a request body"
         def requestBody = "body"
 
         and: "a responseEntity"
-        ResponseEntity responseEntity = Mock( ResponseEntity )
+        ResponseEntity responseEntity = Mock(ResponseEntity)
 
         and: "a status code"
         HttpStatus httpStatus = HttpStatus.OK
 
         when: "configTemplate sends and receives a request"
-        testConfigTemplate.sendAndReceive( HttpMethod.POST, "url", requestBody, null, String )
+        testConfigTemplate.sendAndReceive(HttpMethod.POST, "url", requestBody, null, String)
 
         then: "response entity is returned"
-        1 * restTemplate.exchange( _, _, _, _ ) >> responseEntity
+        1 * restTemplate.exchange(_, _, _, _) >> responseEntity
 
         and: "response entity returns status code OK"
         responseEntity.getStatusCode() >> httpStatus
@@ -248,11 +238,9 @@ class ConfigTemplateSpec extends Specification
     // Inner Class:
     // ============================================================
 
-    private class TestConfigTemplate extends ConfigTemplate
-    {
-        TestConfigTemplate( final ConfigClientProperties configClientProperties, final RestTemplate restTemplate )
-        {
-            super( configClientProperties )
+    private class TestConfigTemplate extends ConfigTemplate {
+        TestConfigTemplate(final ConfigClientProperties configClientProperties, final RestTemplate restTemplate) {
+            super(configClientProperties)
             this.restTemplate = restTemplate
         }
     }

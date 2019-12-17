@@ -12,15 +12,13 @@ import org.springframework.http.ResponseEntity;
  * <p>
  * Created by Piszmog on 5/5/2018.
  */
-public class PublicKeyClient extends ConfigClient
-{
+public class PublicKeyClient extends ConfigClient {
     private static final String DEFAULT_PROFILE = "default";
     private static final String DEFAULT_APPLICATION = "application";
     private static final String PATH_PUBLIC_KEY = "/key/{name}/{profile}";
 
-    public PublicKeyClient( final ConfigTemplate configTemplate )
-    {
-        super( configTemplate );
+    public PublicKeyClient(final ConfigTemplate configTemplate) {
+        super(configTemplate);
     }
 
     /**
@@ -29,9 +27,8 @@ public class PublicKeyClient extends ConfigClient
      * @return The public key from the config server.
      * @throws ConfigException when an error occurs when getting the the public key
      */
-    public String getPublicKey() throws ConfigException
-    {
-        return getPublicKey( configTemplate.getName() );
+    public String getPublicKey() throws ConfigException {
+        return getPublicKey(configTemplate.getName());
     }
 
     /**
@@ -41,9 +38,8 @@ public class PublicKeyClient extends ConfigClient
      * @return The public key from the config server.
      * @throws ConfigException occurs when an error occurs when getting the the public key
      */
-    public String getPublicKey( final String applicationName ) throws ConfigException
-    {
-        return getPublicKey( applicationName, configTemplate.getProfile() );
+    public String getPublicKey(final String applicationName) throws ConfigException {
+        return getPublicKey(applicationName, configTemplate.getProfile());
     }
 
     /**
@@ -54,26 +50,22 @@ public class PublicKeyClient extends ConfigClient
      * @return The public key from the config server.
      * @throws ConfigException when an error occurs when getting the the public key
      */
-    public String getPublicKey( final String applicationName, final String profile ) throws ConfigException
-    {
+    public String getPublicKey(final String applicationName, final String profile) throws ConfigException {
         String name = applicationName;
         String applicationProfile = profile;
-        if ( StringUtils.isBlank( name ) )
-        {
+        if (StringUtils.isBlank(name)) {
             name = DEFAULT_APPLICATION;
         }
-        if ( StringUtils.isBlank( applicationProfile ) )
-        {
+        if (StringUtils.isBlank(applicationProfile)) {
             applicationProfile = DEFAULT_PROFILE;
         }
-        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive( HttpMethod.GET, PATH_PUBLIC_KEY,
+        final ResponseEntity<String> responseEntity = configTemplate.sendAndReceive(HttpMethod.GET, PATH_PUBLIC_KEY,
                 null,
                 null,
                 String.class,
                 name,
-                applicationProfile );
-        if (responseEntity == null)
-        {
+                applicationProfile);
+        if (responseEntity == null) {
             return null;
         }
         return responseEntity.getBody();
