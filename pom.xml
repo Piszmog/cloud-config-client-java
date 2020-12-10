@@ -33,7 +33,7 @@
         <pitest-maven.coverageThreshold>99</pitest-maven.coverageThreshold>
         <!--Plugins-->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-plugin.version>3.1.0</maven-plugin.version>
+        <maven-plugin.version>3.2.0</maven-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <!--Profiles-->
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
