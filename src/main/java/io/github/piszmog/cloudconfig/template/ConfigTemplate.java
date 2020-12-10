@@ -129,9 +129,9 @@ public abstract class ConfigTemplate {
         }
         if (password != null) {
             byte[] credentialsEncoded = Base64Utils.encode((username + ":" + password).getBytes());
-            httpHeaders.add(HEADER_AUTHORIZATION, "Basic " + new String(credentialsEncoded));
+            headers.add(HEADER_AUTHORIZATION, "Basic " + new String(credentialsEncoded));
         } else if (authorization != null) {
-            httpHeaders.add(HEADER_AUTHORIZATION, authorization);
+            headers.add(HEADER_AUTHORIZATION, authorization);
         }
         return headers;
     }

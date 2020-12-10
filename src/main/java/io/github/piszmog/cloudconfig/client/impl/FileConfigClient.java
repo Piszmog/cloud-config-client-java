@@ -94,7 +94,13 @@ public class FileConfigClient extends ConfigClient {
             label = VALUE_DEFAULT_BRANCH;
         }
         if (StringUtils.isNotBlank(directoryPath)) {
-            label = label + "/" + directoryPath;
+            final String path;
+            if (StringUtils.startsWith(directoryPath, "/")) {
+                path = directoryPath;
+            } else {
+                path = "/" + directoryPath;
+            }
+            label = label + path;
         }
         final String finalPath = PATH_NAME_PROFILE + label + PATH_FILE;
         final ResponseEntity<T> responseEntity = configTemplate.sendAndReceive(HttpMethod.GET, finalPath,
@@ -142,7 +148,13 @@ public class FileConfigClient extends ConfigClient {
         if (StringUtils.isBlank(profile)) {
             profile = VALUE_DEFAULT;
         }
-        final String finalPath = PATH_NAME_PROFILE + directoryPath + PATH_FILE;
+        final String path;
+        if (StringUtils.startsWith(directoryPath, "/")) {
+            path = StringUtils.removeStart(directoryPath, "/");
+        } else {
+            path = directoryPath;
+        }
+        final String finalPath = PATH_NAME_PROFILE + path + PATH_FILE;
         final ResponseEntity<T> responseEntity;
         responseEntity = configTemplate.sendAndReceive(HttpMethod.GET, finalPath + "?useDefaultLabel=true",
                 null,
