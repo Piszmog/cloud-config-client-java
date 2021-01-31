@@ -15,12 +15,19 @@ But the Config Client does not fully utilizes the Config Server's endpoints.
 
 This library provides clients for utilizing all the endpoints in the Config Server.
 
-__Cloud Config Client 3.x__ is compatible with
+__Cloud Config Client 3.2.x__ is compatible with
+
+| Dependency | Version |
+| :---: | :---: |
+| Spring Boot | 2.4.x |
+| Spring Cloud Services | 3.2.x.RELEASE |
+
+__Cloud Config Client 3.1.x__ is compatible with
 
 | Dependency | Version |
 | :---: | :---: |
 | Spring Boot | 2.2.x - 2.3.x |
-| Spring Cloud Services | 3.x.x.RELEASE |
+| Spring Cloud Services | 3.1.x.RELEASE |
 
 __Cloud Config Client 2.x__ is compatible with
 
