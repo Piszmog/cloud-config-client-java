@@ -41,7 +41,7 @@
         <!--Dependency Management-->
         <spring-cloud-services-dependencies.version>3.2.1.RELEASE</spring-cloud-services-dependencies.version>
         <spring-boot-dependencies.version>2.4.4</spring-boot-dependencies.version>
-        <pitest-junit5-plugin.version>0.12</pitest-junit5-plugin.version>
+        <pitest-junit5-plugin.version>0.14</pitest-junit5-plugin.version>
         <!-- Sonar -->
         <sonar.projectKey>Piszmog_cloud-config-client</sonar.projectKey>
         <sonar.organization>piszmog</sonar.organization>
