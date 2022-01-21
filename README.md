@@ -14,7 +14,7 @@ But the Config Client does not fully utilizes the Config Server's endpoints.
 
 This library provides clients for utilizing all the endpoints in the Config Server.
 
-__Cloud Config Client 3.2.x >= __ is compatible with
+__Cloud Config Client 3.2.x >=__ is compatible with
 
 | Dependency | Version |
 | :---: | :---: |
