@@ -1,8 +1,8 @@
 package io.github.piszmog.cloudconfig.client.impl;
 
 import io.github.piszmog.cloudconfig.ConfigException;
-import io.github.piszmog.cloudconfig.template.ConfigTemplate;
 import io.github.piszmog.cloudconfig.client.ConfigClient;
+import io.github.piszmog.cloudconfig.template.ConfigTemplate;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;

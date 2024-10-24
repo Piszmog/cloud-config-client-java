@@ -19,15 +19,6 @@ public class LocalConfigTemplateTest {
     }
 
     @Test
-    public void testCreate_timeout() {
-        final LocalConfigTemplate template = new LocalConfigTemplate(
-                new ConfigClientProperties(new StandardEnvironment()),
-                100);
-        assertNotNull(template);
-        assertThat(template).hasFieldOrPropertyWithValue("readTimeout", 100);
-    }
-
-    @Test
     public void testInit() {
         final LocalConfigTemplate template = new LocalConfigTemplate(new ConfigClientProperties(new StandardEnvironment()));
         template.init();

@@ -2,21 +2,23 @@ package io.github.piszmog.cloudconfig.template;
 
 import io.github.piszmog.cloudconfig.ConfigException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.cloud.config.client.ConfigClientStateHolder;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Base64;
 import java.util.Collections;
 
 import static org.springframework.cloud.config.client.ConfigClientProperties.*;
@@ -27,7 +29,6 @@ import static org.springframework.cloud.config.client.ConfigClientProperties.*;
  * Created by Piszmog on 5/5/2018
  */
 public abstract class ConfigTemplate {
-    protected static final int DEFAULT_READ_TIMEOUT = (60 * 1000 * 3) + 5000;
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final int DEFAULT_MAX_PER_ROUTE = 10;
     private static final int DEFAULT_TOTAL_CONNECTIONS = 100;
@@ -128,7 +129,7 @@ public abstract class ConfigTemplate {
             throw new IllegalArgumentException("You must set either 'password' or 'authorization.' Both cannot be used.");
         }
         if (password != null) {
-            byte[] credentialsEncoded = Base64Utils.encode((username + ":" + password).getBytes());
+            byte[] credentialsEncoded = Base64.getEncoder().encode((username + ":" + password).getBytes());
             headers.add(HEADER_AUTHORIZATION, "Basic " + new String(credentialsEncoded));
         } else if (authorization != null) {
             headers.add(HEADER_AUTHORIZATION, authorization);
@@ -203,22 +204,17 @@ public abstract class ConfigTemplate {
      * Creates a pooling request factory with the provided timeout. The pool of connections allow for 10 max connections
      * per route with a total of 100 connections.
      *
-     * @param timeout the timeout for the request timeout, connection timeout, and the socket timeout
      * @return The client http request factory.
      */
-    protected ClientHttpRequestFactory createHttpClientFactory(final int timeout) {
-        final RequestConfig requestConfig = buildRequestConfig(timeout);
-        final PoolingHttpClientConnectionManager connectionManager = createConnectionManager();
+    protected ClientHttpRequestFactory createHttpClientFactory() {
+        final RequestConfig requestConfig = buildRequestConfig();
+        final HttpClientConnectionManager connectionManager = createConnectionManager();
         final HttpClient httpClient = buildHttpClient(requestConfig, connectionManager);
         return new HttpComponentsClientHttpRequestFactory(httpClient);
     }
 
-    private RequestConfig buildRequestConfig(final int timeout) {
-        return RequestConfig.custom()
-                .setConnectionRequestTimeout(timeout)
-                .setConnectTimeout(timeout)
-                .setSocketTimeout(timeout)
-                .build();
+    private RequestConfig buildRequestConfig() {
+        return RequestConfig.custom().build();
     }
 
     private PoolingHttpClientConnectionManager createConnectionManager() {
@@ -228,7 +224,7 @@ public abstract class ConfigTemplate {
         return connectionManager;
     }
 
-    private HttpClient buildHttpClient(final RequestConfig requestConfig, final PoolingHttpClientConnectionManager connectionManager) {
+    private CloseableHttpClient buildHttpClient(final RequestConfig requestConfig, final HttpClientConnectionManager connectionManager) {
         return HttpClients.custom()
                 .setConnectionManager(connectionManager)
                 .setDefaultRequestConfig(requestConfig)

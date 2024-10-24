@@ -1,6 +1,7 @@
 package io.github.piszmog.cloudconfig.template;
 
 import io.github.piszmog.cloudconfig.ConfigException;
+import org.apache.hc.core5.util.Timeout;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -207,12 +208,10 @@ public class ConfigTemplateTest {
 
     @Test
     public void testCreateHttpClientFactory() {
-        final ClientHttpRequestFactory factory = template.createFactory(10);
+        final ClientHttpRequestFactory factory = template.createFactory();
         final AbstractObjectAssert<?, ?> httpClient = assertThat(factory).extracting("httpClient");
         httpClient.extracting("defaultConfig")
-                .hasFieldOrPropertyWithValue("connectionRequestTimeout", 10)
-                .hasFieldOrPropertyWithValue("connectTimeout", 10)
-                .hasFieldOrPropertyWithValue("socketTimeout", 10);
+                .hasFieldOrPropertyWithValue("connectionRequestTimeout", Timeout.ofMinutes(3));
         httpClient.extracting("connManager")
                 .extracting("pool")
                 .hasFieldOrPropertyWithValue("defaultMaxPerRoute", 10)
@@ -225,8 +224,8 @@ public class ConfigTemplateTest {
             this.restTemplate = restTemplate;
         }
 
-        public ClientHttpRequestFactory createFactory(int timeout) {
-            return this.createHttpClientFactory(timeout);
+        public ClientHttpRequestFactory createFactory() {
+            return this.createHttpClientFactory();
         }
     }
 }

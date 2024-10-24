@@ -3,12 +3,11 @@ package io.github.piszmog.cloudconfig.template.impl;
 import io.github.piszmog.cloudconfig.template.ConfigTemplate;
 import io.pivotal.spring.cloud.config.client.ConfigClientOAuth2Properties;
 import io.pivotal.spring.cloud.config.client.OAuth2AuthorizedClientHttpRequestInterceptor;
+import jakarta.annotation.PostConstruct;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.web.client.RestTemplate;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Config template used when OAuth2 authentication is required with the config server.
