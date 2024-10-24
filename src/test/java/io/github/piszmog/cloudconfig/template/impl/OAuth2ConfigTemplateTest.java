@@ -2,6 +2,7 @@ package io.github.piszmog.cloudconfig.template.impl;
 
 import io.pivotal.spring.cloud.config.client.ConfigClientOAuth2Properties;
 import io.pivotal.spring.cloud.config.client.OAuth2AuthorizedClientHttpRequestInterceptor;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.core.env.StandardEnvironment;
@@ -22,11 +23,15 @@ public class OAuth2ConfigTemplateTest {
         template.init();
         assertThat(template).extracting("restTemplate")
                 .extracting("interceptors")
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .hasSize(1)
                 .first()
                 .isInstanceOf(OAuth2AuthorizedClientHttpRequestInterceptor.class)
-                .extracting("clientRegistration")
+                .extracting("authorizedManager")
+                .extracting("authorizedClientService")
+                .extracting("clientRegistrationRepository")
+                .extracting("registrations")
+                .extracting("cloud-config-client")
                 .hasFieldOrPropertyWithValue("registrationId", "cloud-config-client")
                 .hasFieldOrPropertyWithValue("clientId", "clientId")
                 .hasFieldOrPropertyWithValue("clientSecret", "secret")

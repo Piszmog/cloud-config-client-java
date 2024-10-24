@@ -55,7 +55,7 @@ public class LocalConfigTemplateTest {
         template.init();
         assertThat(template).extracting("restTemplate")
                 .extracting("interceptors")
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .hasSize(1)
                 .first()
                 .isInstanceOf(ConfigServicePropertySourceLocator.GenericRequestHeaderInterceptor.class);
