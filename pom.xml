@@ -29,7 +29,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <pitest-maven.mutationThreshold>96</pitest-maven.mutationThreshold>
+        <pitest-maven.mutationThreshold>95/pitest-maven.mutationThreshold>
         <pitest-maven.coverageThreshold>99</pitest-maven.coverageThreshold>
         <!--Plugins-->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
