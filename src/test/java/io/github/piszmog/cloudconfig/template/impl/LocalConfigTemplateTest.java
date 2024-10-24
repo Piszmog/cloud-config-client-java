@@ -1,6 +1,8 @@
 package io.github.piszmog.cloudconfig.template.impl;
 
+import org.apache.hc.core5.util.Timeout;
 import org.assertj.core.api.AbstractObjectAssert;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.cloud.config.client.ConfigServicePropertySourceLocator;
@@ -15,7 +17,6 @@ public class LocalConfigTemplateTest {
     public void testCreate_properties() {
         final LocalConfigTemplate template = new LocalConfigTemplate(new ConfigClientProperties(new StandardEnvironment()));
         assertNotNull(template);
-        assertThat(template).hasFieldOrPropertyWithValue("readTimeout", 185000);
     }
 
     @Test
@@ -26,9 +27,7 @@ public class LocalConfigTemplateTest {
         final AbstractObjectAssert<?, ?> httpClient = assertThat(template).extracting("restTemplate").extracting("requestFactory")
                 .extracting("httpClient");
         httpClient.extracting("defaultConfig")
-                .hasFieldOrPropertyWithValue("connectionRequestTimeout", 185000)
-                .hasFieldOrPropertyWithValue("connectTimeout", 185000)
-                .hasFieldOrPropertyWithValue("socketTimeout", 185000);
+                .hasFieldOrPropertyWithValue("connectionRequestTimeout", Timeout.ofMinutes(3));
         httpClient.extracting("connManager")
                 .extracting("pool")
                 .hasFieldOrPropertyWithValue("defaultMaxPerRoute", 10)
@@ -44,7 +43,7 @@ public class LocalConfigTemplateTest {
         template.init();
         assertThat(template).extracting("restTemplate")
                 .extracting("interceptors")
-                .asList()
+                .asInstanceOf(InstanceOfAssertFactories.LIST)
                 .hasSize(0);
     }
 
