@@ -1,7 +1,6 @@
 # Cloud Config Client
 
 [![Java](https://github.com/Piszmog/cloud-config-client-java/actions/workflows/java.yml/badge.svg)](https://github.com/Piszmog/cloud-config-client-java/actions/workflows/java.yml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.piszmog/cloud-config-client/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/io.github.piszmog/cloud-config-client)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Description
