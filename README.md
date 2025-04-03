@@ -1,3 +1,7 @@
+This repository has been archived.
+
+It became too difficult to keep up with the breaking changes that ever minor version that Spring would introduce.
+
 # Cloud Config Client
 
 [![Java](https://github.com/Piszmog/cloud-config-client-java/actions/workflows/java.yml/badge.svg)](https://github.com/Piszmog/cloud-config-client-java/actions/workflows/java.yml)
